@@ -3,10 +3,10 @@ using TMPro;
 
 public class ScinShop : MonoBehaviour
 {
-    public int money = 500; // количество ваших денег при старте игры
-    public TextMeshProUGUI textMoney; // ссылка на текст на игровой сцене, в котором отображено количество денег.
-    public Scin[] scins; // ссылки на все ваши скины (объекты Scin1, Scin2, Scin3)
-    public int activeScinID = 0; // номер скина, который куплен и активирован изначально
+    public int money = 500; // ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® ГўГ ГёГЁГµ Г¤ГҐГ­ГҐГЈ ГЇГ°ГЁ Г±ГІГ Г°ГІГҐ ГЁГЈГ°Г»
+    public TextMeshProUGUI textMoney; // Г±Г±Г»Г«ГЄГ  Г­Г  ГІГҐГЄГ±ГІ Г­Г  ГЁГЈГ°Г®ГўГ®Г© Г±Г¶ГҐГ­ГҐ, Гў ГЄГ®ГІГ®Г°Г®Г¬ Г®ГІГ®ГЎГ°Г Г¦ГҐГ­Г® ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® Г¤ГҐГ­ГҐГЈ.
+    public Scin[] scins; // Г±Г±Г»Г«ГЄГЁ Г­Г  ГўГ±ГҐ ГўГ ГёГЁ Г±ГЄГЁГ­Г» (Г®ГЎГєГҐГЄГІГ» Scin1, Scin2, Scin3)
+    public int activeScinID = 0; // Г­Г®Г¬ГҐГ° Г±ГЄГЁГ­Г , ГЄГ®ГІГ®Г°Г»Г© ГЄГіГЇГ«ГҐГ­ ГЁ Г ГЄГІГЁГўГЁГ°Г®ГўГ Г­ ГЁГ§Г­Г Г·Г Г«ГјГ­Г®
 
     private void Start()
     {
@@ -26,7 +26,7 @@ public class ScinShop : MonoBehaviour
         PlayerPrefs.SetInt("buy" + activeScinID, 1);
         PlayerPrefs.SetInt("scinsID", activeScinID);
 
-        textMoney.text = "Монет: " + money.ToString();
+        textMoney.text = "ГЊГ®Г­ГҐГІ: " + money.ToString();
 
         for (int j = 0; j < scins.Length; j++)
         {
