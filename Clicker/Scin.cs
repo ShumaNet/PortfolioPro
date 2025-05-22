@@ -3,21 +3,21 @@ using UnityEngine.UI;
 
 public class Scin : MonoBehaviour
 {
-    public int cost; // стоимость скина
-    public int scinID; // id скинакуплен ли скин?
-    public bool isBuy; // куплен ли скин?
-    public bool isSelected; // активирован ли скин?
+    public int cost; // Г±ГІГ®ГЁГ¬Г®Г±ГІГј Г±ГЄГЁГ­Г 
+    public int scinID; // id Г±ГЄГЁГ­Г ГЄГіГЇГ«ГҐГ­ Г«ГЁ Г±ГЄГЁГ­?
+    public bool isBuy; // ГЄГіГЇГ«ГҐГ­ Г«ГЁ Г±ГЄГЁГ­?
+    public bool isSelected; // Г ГЄГІГЁГўГЁГ°Г®ГўГ Г­ Г«ГЁ Г±ГЄГЁГ­?
 
-    public Button buttonBuy; // ссылка на кнопку "купить"
-    public Button buttonSelect; // ссылка на кнопку "применить"
-    public ScinShop scinShop; // ссылка на скрипт ScinShop магазина, который находится на объекте Canvas
+    public Button buttonBuy; // Г±Г±Г»Г«ГЄГ  Г­Г  ГЄГ­Г®ГЇГЄГі "ГЄГіГЇГЁГІГј"
+    public Button buttonSelect; // Г±Г±Г»Г«ГЄГ  Г­Г  ГЄГ­Г®ГЇГЄГі "ГЇГ°ГЁГ¬ГҐГ­ГЁГІГј"
+    public ScinShop scinShop; // Г±Г±Г»Г«ГЄГ  Г­Г  Г±ГЄГ°ГЁГЇГІ ScinShop Г¬Г ГЈГ Г§ГЁГ­Г , ГЄГ®ГІГ®Г°Г»Г© Г­Г ГµГ®Г¤ГЁГІГ±Гї Г­Г  Г®ГЎГєГҐГЄГІГҐ Canvas
 
     public void Buy()
     {
         if (scinShop.money >= cost)
         {
             scinShop.money -= cost;
-            scinShop.textMoney.text = "Монет: " + scinShop.money.ToString();
+            scinShop.textMoney.text = "ГЊГ®Г­ГҐГІ: " + scinShop.money.ToString();
             isBuy = true;
             buttonBuy.gameObject.SetActive(false);
             buttonSelect.gameObject.SetActive(true);
