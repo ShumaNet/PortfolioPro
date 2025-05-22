@@ -6,13 +6,13 @@ using UnityEngine.UI;
 public class HomeManager : MonoBehaviour
 {
     
-    public Text TextMoney; // перевожу деньги в текст
+    public Text TextMoney; // ГЇГҐГ°ГҐГўГ®Г¦Гі Г¤ГҐГ­ГјГЈГЁ Гў ГІГҐГЄГ±ГІ
 
-    public Text TextPassiveMoneyOnOneSecond; //текст пасива  за одну секунду
-    public Text TextDoublePassiveMoneyOnOneSecond; //текст удваивания пассива  за одну секунду
+    public Text TextPassiveMoneyOnOneSecond; //ГІГҐГЄГ±ГІ ГЇГ Г±ГЁГўГ   Г§Г  Г®Г¤Г­Гі Г±ГҐГЄГіГ­Г¤Гі
+    public Text TextDoublePassiveMoneyOnOneSecond; //ГІГҐГЄГ±ГІ ГіГ¤ГўГ ГЁГўГ Г­ГЁГї ГЇГ Г±Г±ГЁГўГ   Г§Г  Г®Г¤Г­Гі Г±ГҐГЄГіГ­Г¤Гі
 
-    public Text TextMoneyOnOneClick;// текст  за один тап
-    public Text TextDoubleMoneyOnOneClick; // текст удваивания за один тап
+    public Text TextMoneyOnOneClick;// ГІГҐГЄГ±ГІ  Г§Г  Г®Г¤ГЁГ­ ГІГ ГЇ
+    public Text TextDoubleMoneyOnOneClick; // ГІГҐГЄГ±ГІ ГіГ¤ГўГ ГЁГўГ Г­ГЁГї Г§Г  Г®Г¤ГЁГ­ ГІГ ГЇ
 
     public Text TextPriceA;  //PriceDoublePassiveMoneyOnOneSecond
     public Text TextPriceB; //PriceDoubleMoneyOnOneClick
