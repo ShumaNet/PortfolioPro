@@ -11,10 +11,10 @@ public class GameData
     public bool isNewGame;
     public DateTime lastSaveTime;
 
-    // Состояние монет
+    // Г‘Г®Г±ГІГ®ГїГ­ГЁГҐ Г¬Г®Г­ГҐГІ
     public SerializableDictionary<string, bool> collectedCoins;
 
-    // Состояние врагов
+    // Г‘Г®Г±ГІГ®ГїГ­ГЁГҐ ГўГ°Г ГЈГ®Гў
     public SerializableDictionary<string, EnemySaveData> enemyStates;
 
     public GameData()
