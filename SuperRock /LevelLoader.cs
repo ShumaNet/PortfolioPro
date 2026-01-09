@@ -9,63 +9,63 @@ public class LevelLoader : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            // Сохраняем перед переходом
+            // Г‘Г®ГµГ°Г Г­ГїГҐГ¬ ГЇГҐГ°ГҐГ¤ ГЇГҐГ°ГҐГµГ®Г¤Г®Г¬
             SaveBeforeLoading();
 
-            // Переходим на следующий уровень
+            // ГЏГҐГ°ГҐГµГ®Г¤ГЁГ¬ Г­Г  Г±Г«ГҐГ¤ГіГѕГ№ГЁГ© ГіГ°Г®ГўГҐГ­Гј
             SceneManager.LoadScene(nextLevelName);
         }
     }
 
-    // Для кнопок или других триггеров
+    // Г„Г«Гї ГЄГ­Г®ГЇГ®ГЄ ГЁГ«ГЁ Г¤Г°ГіГЈГЁГµ ГІГ°ГЁГЈГЈГҐГ°Г®Гў
     public void LoadLevel()
     {
-        // Сохраняем перед переходом
+        // Г‘Г®ГµГ°Г Г­ГїГҐГ¬ ГЇГҐГ°ГҐГ¤ ГЇГҐГ°ГҐГµГ®Г¤Г®Г¬
         SaveBeforeLoading();
 
         SceneManager.LoadScene(nextLevelName);
     }
 
-    // Альтернативный метод с авто-сохранением
+    // ГЂГ«ГјГІГҐГ°Г­Г ГІГЁГўГ­Г»Г© Г¬ГҐГІГ®Г¤ Г± Г ГўГІГ®-Г±Г®ГµГ°Г Г­ГҐГ­ГЁГҐГ¬
     public void LoadLevelWithAutoSave()
     {
-        // Сохраняем текущее состояние
+        // Г‘Г®ГµГ°Г Г­ГїГҐГ¬ ГІГҐГЄГіГ№ГҐГҐ Г±Г®Г±ГІГ®ГїГ­ГЁГҐ
         SaveBeforeLoading();
 
-        // Обновляем уровень в сохранении
+        // ГЋГЎГ­Г®ГўГ«ГїГҐГ¬ ГіГ°Г®ГўГҐГ­Гј Гў Г±Г®ГµГ°Г Г­ГҐГ­ГЁГЁ
         if (SaveManager.Instance != null)
         {
             GameData data = SaveManager.Instance.GetGameData();
             if (data != null)
             {
                 data.currentLevel = nextLevelName;
-                SaveManager.Instance.SaveGame(); // Сохраняем с новым уровнем
+                SaveManager.Instance.SaveGame(); // Г‘Г®ГµГ°Г Г­ГїГҐГ¬ Г± Г­Г®ГўГ»Г¬ ГіГ°Г®ГўГ­ГҐГ¬
             }
         }
 
         SceneManager.LoadScene(nextLevelName);
     }
 
-    // Общий метод сохранения перед загрузкой уровня
+    // ГЋГЎГ№ГЁГ© Г¬ГҐГІГ®Г¤ Г±Г®ГµГ°Г Г­ГҐГ­ГЁГї ГЇГҐГ°ГҐГ¤ Г§Г ГЈГ°ГіГ§ГЄГ®Г© ГіГ°Г®ГўГ­Гї
     private void SaveBeforeLoading()
     {
         if (SaveManager.Instance != null)
         {
-            // Сохраняем данные игрока перед переходом
+            // Г‘Г®ГµГ°Г Г­ГїГҐГ¬ Г¤Г Г­Г­Г»ГҐ ГЁГЈГ°Г®ГЄГ  ГЇГҐГ°ГҐГ¤ ГЇГҐГ°ГҐГµГ®Г¤Г®Г¬
             GameObject player = GameObject.FindGameObjectWithTag("Player");
             if (player != null)
             {
                 CharacterControl character = player.GetComponent<CharacterControl>();
                 if (character != null)
                 {
-                    // Обновляем данные в GameData
+                    // ГЋГЎГ­Г®ГўГ«ГїГҐГ¬ Г¤Г Г­Г­Г»ГҐ Гў GameData
                     GameData data = SaveManager.Instance.GetGameData();
                     data.playerHealth = character.GetCurrentHealth();
                     data.playerPosition = player.transform.position;
                     data.currentLevel = nextLevelName;
                     data.playerMoney = PlayerPrefs.GetInt("Money", 0);
 
-                    // Сохраняем
+                    // Г‘Г®ГµГ°Г Г­ГїГҐГ¬
                     SaveManager.Instance.SaveGame();
                 }
             }
