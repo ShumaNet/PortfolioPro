@@ -3,34 +3,34 @@ using System.Collections;
 
 public class JumpAttack : MonoBehaviour
 {
-    [Header("Настройки прыжка-атаки")]
-    public float maxJumpDistance = 15f;           // Максимальная дистанция прыжка
-    public float minJumpDistance = 3f;            // Минимальная дистанция прыжка
-    public float maxJumpHeight = 5f;              // Максимальная высота прыжка
-    public float minJumpHeight = 1.5f;            // Минимальная высота прыжка
-    public float maxJumpDuration = 1.5f;          // Максимальная длительность прыжка
-    public float minJumpDuration = 0.5f;          // Минимальная длительность прыжка
-    public int attackDamage = 15;                 // Урон при прыжке-атаке
-    public float attackCooldown = 2f;             // Время перезарядки
-    public float attackRadius = 5f;               // Радиус поражения при приземлении
-    public AnimationCurve jumpHeightCurve = AnimationCurve.Linear(0, 0, 1, 1); // Кривая высоты прыжка
-    public AnimationCurve jumpSpeedCurve = AnimationCurve.Linear(0, 0, 1, 1);  // Кривая скорости прыжка
+    [Header("ГЌГ Г±ГІГ°Г®Г©ГЄГЁ ГЇГ°Г»Г¦ГЄГ -Г ГІГ ГЄГЁ")]
+    public float maxJumpDistance = 15f;           // ГЊГ ГЄГ±ГЁГ¬Г Г«ГјГ­Г Гї Г¤ГЁГ±ГІГ Г­Г¶ГЁГї ГЇГ°Г»Г¦ГЄГ 
+    public float minJumpDistance = 3f;            // ГЊГЁГ­ГЁГ¬Г Г«ГјГ­Г Гї Г¤ГЁГ±ГІГ Г­Г¶ГЁГї ГЇГ°Г»Г¦ГЄГ 
+    public float maxJumpHeight = 5f;              // ГЊГ ГЄГ±ГЁГ¬Г Г«ГјГ­Г Гї ГўГ»Г±Г®ГІГ  ГЇГ°Г»Г¦ГЄГ 
+    public float minJumpHeight = 1.5f;            // ГЊГЁГ­ГЁГ¬Г Г«ГјГ­Г Гї ГўГ»Г±Г®ГІГ  ГЇГ°Г»Г¦ГЄГ 
+    public float maxJumpDuration = 1.5f;          // ГЊГ ГЄГ±ГЁГ¬Г Г«ГјГ­Г Гї Г¤Г«ГЁГІГҐГ«ГјГ­Г®Г±ГІГј ГЇГ°Г»Г¦ГЄГ 
+    public float minJumpDuration = 0.5f;          // ГЊГЁГ­ГЁГ¬Г Г«ГјГ­Г Гї Г¤Г«ГЁГІГҐГ«ГјГ­Г®Г±ГІГј ГЇГ°Г»Г¦ГЄГ 
+    public int attackDamage = 15;                 // Г“Г°Г®Г­ ГЇГ°ГЁ ГЇГ°Г»Г¦ГЄГҐ-Г ГІГ ГЄГҐ
+    public float attackCooldown = 2f;             // Г‚Г°ГҐГ¬Гї ГЇГҐГ°ГҐГ§Г Г°ГїГ¤ГЄГЁ
+    public float attackRadius = 5f;               // ГђГ Г¤ГЁГіГ± ГЇГ®Г°Г Г¦ГҐГ­ГЁГї ГЇГ°ГЁ ГЇГ°ГЁГ§ГҐГ¬Г«ГҐГ­ГЁГЁ
+    public AnimationCurve jumpHeightCurve = AnimationCurve.Linear(0, 0, 1, 1); // ГЉГ°ГЁГўГ Гї ГўГ»Г±Г®ГІГ» ГЇГ°Г»Г¦ГЄГ 
+    public AnimationCurve jumpSpeedCurve = AnimationCurve.Linear(0, 0, 1, 1);  // ГЉГ°ГЁГўГ Гї Г±ГЄГ®Г°Г®Г±ГІГЁ ГЇГ°Г»Г¦ГЄГ 
 
-    [Header("Настройки обнаружения")]
-    public LayerMask enemyLayer;                  // Слой врагов
-    public LayerMask obstacleLayer;               // Слой препятствий
+    [Header("ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г®ГЎГ­Г Г°ГіГ¦ГҐГ­ГЁГї")]
+    public LayerMask enemyLayer;                  // Г‘Г«Г®Г© ГўГ°Г ГЈГ®Гў
+    public LayerMask obstacleLayer;               // Г‘Г«Г®Г© ГЇГ°ГҐГЇГїГІГ±ГІГўГЁГ©
 
-    [Header("Визуальные эффекты")]
-    public GameObject jumpChargeEffect;           // Эффект при заряде прыжка
-    public GameObject jumpAttackEffect;           // Эффект при прыжке-атаке
-    public GameObject landingEffect;              // Эффект при приземлении
-    public AudioClip jumpChargeSound;             // Звук заряда прыжка
-    public AudioClip jumpSound;                   // Звук прыжка
-    public AudioClip attackSound;                 // Звук атаки
+    [Header("Г‚ГЁГ§ГіГ Г«ГјГ­Г»ГҐ ГЅГґГґГҐГЄГІГ»")]
+    public GameObject jumpChargeEffect;           // ГќГґГґГҐГЄГІ ГЇГ°ГЁ Г§Г Г°ГїГ¤ГҐ ГЇГ°Г»Г¦ГЄГ 
+    public GameObject jumpAttackEffect;           // ГќГґГґГҐГЄГІ ГЇГ°ГЁ ГЇГ°Г»Г¦ГЄГҐ-Г ГІГ ГЄГҐ
+    public GameObject landingEffect;              // ГќГґГґГҐГЄГІ ГЇГ°ГЁ ГЇГ°ГЁГ§ГҐГ¬Г«ГҐГ­ГЁГЁ
+    public AudioClip jumpChargeSound;             // Г‡ГўГіГЄ Г§Г Г°ГїГ¤Г  ГЇГ°Г»Г¦ГЄГ 
+    public AudioClip jumpSound;                   // Г‡ГўГіГЄ ГЇГ°Г»Г¦ГЄГ 
+    public AudioClip attackSound;                 // Г‡ГўГіГЄ Г ГІГ ГЄГЁ
 
-    private bool isJumpAttacking = false;         // Флаг прыжка-атаки
-    private bool canJumpAttack = true;            // Может ли выполнить прыжок-атаку
-    private float lastJumpAttackTime;             // Время последней прыжк-атаки
+    private bool isJumpAttacking = false;         // Г”Г«Г ГЈ ГЇГ°Г»Г¦ГЄГ -Г ГІГ ГЄГЁ
+    private bool canJumpAttack = true;            // ГЊГ®Г¦ГҐГІ Г«ГЁ ГўГ»ГЇГ®Г«Г­ГЁГІГј ГЇГ°Г»Г¦Г®ГЄ-Г ГІГ ГЄГі
+    private float lastJumpAttackTime;             // Г‚Г°ГҐГ¬Гї ГЇГ®Г±Г«ГҐГ¤Г­ГҐГ© ГЇГ°Г»Г¦ГЄ-Г ГІГ ГЄГЁ
 
     private Animator animator;
     private AudioSource audioSource;
@@ -61,7 +61,7 @@ public class JumpAttack : MonoBehaviour
         if (target != null)
             StartCoroutine(PerformJumpAttack(target.transform));
         else
-            Debug.Log("Нет подходящих целей для прыжка-атаки!");
+            Debug.Log("ГЌГҐГІ ГЇГ®Г¤ГµГ®Г¤ГїГ№ГЁГµ Г¶ГҐГ«ГҐГ© Г¤Г«Гї ГЇГ°Г»Г¦ГЄГ -Г ГІГ ГЄГЁ!");
     }
 
     GameObject FindJumpAttackTarget()
@@ -84,7 +84,7 @@ public class JumpAttack : MonoBehaviour
             Vector3 toEnemy = (enemy.transform.position - transform.position);
             float distance = toEnemy.magnitude;
 
-            // Пропускаем слишком близких врагов
+            // ГЏГ°Г®ГЇГіГ±ГЄГ ГҐГ¬ Г±Г«ГЁГёГЄГ®Г¬ ГЎГ«ГЁГ§ГЄГЁГµ ГўГ°Г ГЈГ®Гў
             if (distance < minJumpDistance)
                 continue;
 
@@ -117,47 +117,47 @@ public class JumpAttack : MonoBehaviour
         Vector3 startPosition = transform.position;
         Vector3 targetPosition = target.position;
 
-        // Расчет расстояния до цели
+        // ГђГ Г±Г·ГҐГІ Г°Г Г±Г±ГІГ®ГїГ­ГЁГї Г¤Г® Г¶ГҐГ«ГЁ
         float distance = Vector3.Distance(startPosition, targetPosition);
         distance = Mathf.Clamp(distance, minJumpDistance, maxJumpDistance);
 
-        // Расчет параметров прыжка в зависимости от расстояния
+        // ГђГ Г±Г·ГҐГІ ГЇГ Г°Г Г¬ГҐГІГ°Г®Гў ГЇГ°Г»Г¦ГЄГ  Гў Г§Г ГўГЁГ±ГЁГ¬Г®Г±ГІГЁ Г®ГІ Г°Г Г±Г±ГІГ®ГїГ­ГЁГї
         float normalizedDistance = (distance - minJumpDistance) / (maxJumpDistance - minJumpDistance);
         float jumpHeight = Mathf.Lerp(minJumpHeight, maxJumpHeight, normalizedDistance);
         float jumpDuration = Mathf.Lerp(minJumpDuration, maxJumpDuration, normalizedDistance);
 
-        // Позиция приземления (немного перед врагом)
+        // ГЏГ®Г§ГЁГ¶ГЁГї ГЇГ°ГЁГ§ГҐГ¬Г«ГҐГ­ГЁГї (Г­ГҐГ¬Г­Г®ГЈГ® ГЇГҐГ°ГҐГ¤ ГўГ°Г ГЈГ®Г¬)
         Vector3 directionToTarget = (targetPosition - startPosition).normalized;
-        float landingOffset = Mathf.Lerp(1f, 2f, normalizedDistance); // Отступ увеличивается с расстоянием
+        float landingOffset = Mathf.Lerp(1f, 2f, normalizedDistance); // ГЋГІГ±ГІГіГЇ ГіГўГҐГ«ГЁГ·ГЁГўГ ГҐГІГ±Гї Г± Г°Г Г±Г±ГІГ®ГїГ­ГЁГҐГ¬
         targetPosition = targetPosition - directionToTarget * landingOffset;
         targetPosition.y = startPosition.y;
 
-        // Эффект заряда прыжка
+        // ГќГґГґГҐГЄГІ Г§Г Г°ГїГ¤Г  ГЇГ°Г»Г¦ГЄГ 
         if (jumpChargeEffect != null)
             Instantiate(jumpChargeEffect, transform.position, Quaternion.identity);
 
         if (jumpChargeSound != null)
             audioSource.PlayOneShot(jumpChargeSound);
 
-        yield return new WaitForSeconds(0.2f); // Короткая задержка для заряда
+        yield return new WaitForSeconds(0.2f); // ГЉГ®Г°Г®ГІГЄГ Гї Г§Г Г¤ГҐГ°Г¦ГЄГ  Г¤Г«Гї Г§Г Г°ГїГ¤Г 
 
-        // Отключаем физику Rigidbody на время прыжка
+        // ГЋГІГЄГ«ГѕГ·Г ГҐГ¬ ГґГЁГ§ГЁГЄГі Rigidbody Г­Г  ГўГ°ГҐГ¬Гї ГЇГ°Г»Г¦ГЄГ 
         bool wasKinematic = playerRigidbody.isKinematic;
         playerRigidbody.isKinematic = true;
 
-        // Запускаем анимацию прыжка-атаки
+        // Г‡Г ГЇГіГ±ГЄГ ГҐГ¬ Г Г­ГЁГ¬Г Г¶ГЁГѕ ГЇГ°Г»Г¦ГЄГ -Г ГІГ ГЄГЁ
         if (animator != null)
             animator.Play("Atack");
 
-        // Воспроизводим звук прыжка
+        // Г‚Г®Г±ГЇГ°Г®ГЁГ§ГўГ®Г¤ГЁГ¬ Г§ГўГіГЄ ГЇГ°Г»Г¦ГЄГ 
         if (jumpSound != null)
             audioSource.PlayOneShot(jumpSound);
 
-        // Создаем эффект прыжка
+        // Г‘Г®Г§Г¤Г ГҐГ¬ ГЅГґГґГҐГЄГІ ГЇГ°Г»Г¦ГЄГ 
         if (jumpAttackEffect != null)
             Instantiate(jumpAttackEffect, transform.position, Quaternion.identity);
 
-        // Двигаем персонажа во время анимации
+        // Г„ГўГЁГЈГ ГҐГ¬ ГЇГҐГ°Г±Г®Г­Г Г¦Г  ГўГ® ГўГ°ГҐГ¬Гї Г Г­ГЁГ¬Г Г¶ГЁГЁ
         float elapsedTime = 0f;
 
         while (elapsedTime < jumpDuration)
@@ -165,21 +165,21 @@ public class JumpAttack : MonoBehaviour
             elapsedTime += Time.deltaTime;
             float progress = elapsedTime / jumpDuration;
 
-            // Используем кривую для плавности
+            // Г€Г±ГЇГ®Г«ГјГ§ГіГҐГ¬ ГЄГ°ГЁГўГіГѕ Г¤Г«Гї ГЇГ«Г ГўГ­Г®Г±ГІГЁ
             float curvedProgress = jumpSpeedCurve.Evaluate(progress);
 
-            // Кривая прыжка (парабола с использованием кривой AnimationCurve)
+            // ГЉГ°ГЁГўГ Гї ГЇГ°Г»Г¦ГЄГ  (ГЇГ Г°Г ГЎГ®Г«Г  Г± ГЁГ±ГЇГ®Г«ГјГ§Г®ГўГ Г­ГЁГҐГ¬ ГЄГ°ГЁГўГ®Г© AnimationCurve)
             float heightCurve = jumpHeightCurve.Evaluate(progress);
             float height = Mathf.Sin(heightCurve * Mathf.PI) * jumpHeight;
 
-            // Позиция с учетом кривой
+            // ГЏГ®Г§ГЁГ¶ГЁГї Г± ГіГ·ГҐГІГ®Г¬ ГЄГ°ГЁГўГ®Г©
             Vector3 newPosition = Vector3.Lerp(startPosition, targetPosition, curvedProgress);
             newPosition.y = startPosition.y + height;
 
-            // Применяем позицию напрямую (Rigidbody отключен)
+            // ГЏГ°ГЁГ¬ГҐГ­ГїГҐГ¬ ГЇГ®Г§ГЁГ¶ГЁГѕ Г­Г ГЇГ°ГїГ¬ГіГѕ (Rigidbody Г®ГІГЄГ«ГѕГ·ГҐГ­)
             transform.position = newPosition;
 
-            // Плавный поворот к цели во время прыжка
+            // ГЏГ«Г ГўГ­Г»Г© ГЇГ®ГўГ®Г°Г®ГІ ГЄ Г¶ГҐГ«ГЁ ГўГ® ГўГ°ГҐГ¬Гї ГЇГ°Г»Г¦ГЄГ 
             Vector3 lookDirection = (target.position - transform.position).normalized;
             if (lookDirection != Vector3.zero)
             {
@@ -190,51 +190,51 @@ public class JumpAttack : MonoBehaviour
             yield return null;
         }
 
-        // Включаем обратно физику
+        // Г‚ГЄГ«ГѕГ·Г ГҐГ¬ Г®ГЎГ°Г ГІГ­Г® ГґГЁГ§ГЁГЄГі
         playerRigidbody.isKinematic = wasKinematic;
 
-        // Наносим урон всем врагам в радиусе при приземлении
+        // ГЌГ Г­Г®Г±ГЁГ¬ ГіГ°Г®Г­ ГўГ±ГҐГ¬ ГўГ°Г ГЈГ Г¬ Гў Г°Г Г¤ГЁГіГ±ГҐ ГЇГ°ГЁ ГЇГ°ГЁГ§ГҐГ¬Г«ГҐГ­ГЁГЁ
         OnJumpAttackLand();
         CharacterControl.canWalk = true;
 
-        // Запускаем перезарядку
+        // Г‡Г ГЇГіГ±ГЄГ ГҐГ¬ ГЇГҐГ°ГҐГ§Г Г°ГїГ¤ГЄГі
         StartCoroutine(JumpAttackCooldown());
     }
 
     void OnJumpAttackLand()
     {
-        // Находим всех врагов в радиусе атаки
+        // ГЌГ ГµГ®Г¤ГЁГ¬ ГўГ±ГҐГµ ГўГ°Г ГЈГ®Гў Гў Г°Г Г¤ГЁГіГ±ГҐ Г ГІГ ГЄГЁ
         Collider[] hitEnemies = Physics.OverlapSphere(transform.position, attackRadius, enemyLayer);
 
         int enemiesHit = 0;
 
         foreach (Collider enemy in hitEnemies)
         {
-            // Наносим урон каждому врагу в радиусе
+            // ГЌГ Г­Г®Г±ГЁГ¬ ГіГ°Г®Г­ ГЄГ Г¦Г¤Г®Г¬Гі ГўГ°Г ГЈГі Гў Г°Г Г¤ГЁГіГ±ГҐ
             EnemyAI enemyHealth = enemy.GetComponent<EnemyAI>();
             if (enemyHealth != null)
             {
                 enemyHealth.TakeEnemyDamage(attackDamage);
                 enemiesHit++;
-                Debug.Log($"Прыжок-атака! Нанесено урона: {attackDamage} врагу {enemy.name}");
+                Debug.Log($"ГЏГ°Г»Г¦Г®ГЄ-Г ГІГ ГЄГ ! ГЌГ Г­ГҐГ±ГҐГ­Г® ГіГ°Г®Г­Г : {attackDamage} ГўГ°Г ГЈГі {enemy.name}");
             }
         }
 
         if (enemiesHit > 0)
         {
-            Debug.Log($"Прыжок-атака поразила {enemiesHit} врагов!");
+            Debug.Log($"ГЏГ°Г»Г¦Г®ГЄ-Г ГІГ ГЄГ  ГЇГ®Г°Г Г§ГЁГ«Г  {enemiesHit} ГўГ°Г ГЈГ®Гў!");
 
-            // Создаем эффект приземления
+            // Г‘Г®Г§Г¤Г ГҐГ¬ ГЅГґГґГҐГЄГІ ГЇГ°ГЁГ§ГҐГ¬Г«ГҐГ­ГЁГї
             if (landingEffect != null)
                 Instantiate(landingEffect, transform.position, Quaternion.identity);
 
-            // Воспроизводим звук атаки
+            // Г‚Г®Г±ГЇГ°Г®ГЁГ§ГўГ®Г¤ГЁГ¬ Г§ГўГіГЄ Г ГІГ ГЄГЁ
             if (attackSound != null)
                 audioSource.PlayOneShot(attackSound);
         }
         else
         {
-            Debug.Log("Прыжок-атака не попала ни по одному врагу!");
+            Debug.Log("ГЏГ°Г»Г¦Г®ГЄ-Г ГІГ ГЄГ  Г­ГҐ ГЇГ®ГЇГ Г«Г  Г­ГЁ ГЇГ® Г®Г¤Г­Г®Г¬Гі ГўГ°Г ГЈГі!");
         }
     }
 
@@ -247,7 +247,7 @@ public class JumpAttack : MonoBehaviour
 
    
 
-    // Расчет параметров прыжка для отладки
+    // ГђГ Г±Г·ГҐГІ ГЇГ Г°Г Г¬ГҐГІГ°Г®Гў ГЇГ°Г»Г¦ГЄГ  Г¤Г«Гї Г®ГІГ«Г Г¤ГЄГЁ
     public void CalculateJumpParameters(float distance, out float jumpHeight, out float jumpDuration)
     {
         distance = Mathf.Clamp(distance, minJumpDistance, maxJumpDistance);
