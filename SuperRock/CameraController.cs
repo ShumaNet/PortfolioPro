@@ -42,10 +42,10 @@ public class CameraController : MonoBehaviour
         public float minCameraDistance = 0.5f;
     }
 
-    [Header("Основные настройки камеры")]
+    [Header("ГЋГ±Г­Г®ГўГ­Г»ГҐ Г­Г Г±ГІГ°Г®Г©ГЄГЁ ГЄГ Г¬ГҐГ°Г»")]
     [SerializeField]CameraSettings cameraSettings = new CameraSettings();
 
-    [Header("Настройки зума")]
+    [Header("ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§ГіГ¬Г ")]
     [SerializeField] ZoomSettings zoomSettings = new ZoomSettings();
 
     [Header("Mouse Settings")]
@@ -122,10 +122,10 @@ public class CameraController : MonoBehaviour
             desiredZoomDistance = Mathf.Clamp(desiredZoomDistance, zoomSettings.minZoomDistance, zoomSettings.maxZoomDistance);
         }
 
-        // Используем более плавную интерполяцию
+        // Г€Г±ГЇГ®Г«ГјГ§ГіГҐГ¬ ГЎГ®Г«ГҐГҐ ГЇГ«Г ГўГ­ГіГѕ ГЁГ­ГІГҐГ°ГЇГ®Г«ГїГ¶ГЁГѕ
         zoomSettings.currentZoomDistance = Mathf.Lerp(zoomSettings.currentZoomDistance, desiredZoomDistance, Time.deltaTime * zoomSettings.zoomSmoothness);
 
-        // Синхронизируем переменные
+        // Г‘ГЁГ­ГµГ°Г®Г­ГЁГ§ГЁГ°ГіГҐГ¬ ГЇГҐГ°ГҐГ¬ГҐГ­Г­Г»ГҐ
         distanceCameraFromCharacter = zoomSettings.currentZoomDistance;
     }
 
@@ -167,7 +167,7 @@ public class CameraController : MonoBehaviour
         Quaternion rotation = Quaternion.Euler(currentRotation.x, currentRotation.y, 0);
         desiredPosition = rayStart - (rotation * Vector3.forward * distanceCameraFromCharacter);
 
-        // Ограничение по высоте (опционально)
+        // ГЋГЈГ°Г Г­ГЁГ·ГҐГ­ГЁГҐ ГЇГ® ГўГ»Г±Г®ГІГҐ (Г®ГЇГ¶ГЁГ®Г­Г Г«ГјГ­Г®)
         float minHeight = cameraSettings.playerTarget.position.y + 0.5f;
         if (desiredPosition.y < minHeight)
             desiredPosition.y = minHeight;
