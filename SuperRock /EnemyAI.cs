@@ -3,57 +3,57 @@ using System.Collections;
 
 public class EnemyAI : MonoBehaviour
 {
-    [Header("Основные настройки")]
+    [Header("ГЋГ±Г­Г®ГўГ­Г»ГҐ Г­Г Г±ГІГ°Г®Г©ГЄГЁ")]
     public float health = 100f;
     public float moveSpeed = 3f;
     public float rotationSpeed = 5f;
 
-    [Header("Обнаружение игрока")]
+    [Header("ГЋГЎГ­Г Г°ГіГ¦ГҐГ­ГЁГҐ ГЁГЈГ°Г®ГЄГ ")]
     public float detectionRange = 8f;
     public float attackRange = 2f;
     public LayerMask playerLayer;
     public LayerMask obstacleLayer;
 
-    [Header("Патрулирование")]
+    [Header("ГЏГ ГІГ°ГіГ«ГЁГ°Г®ГўГ Г­ГЁГҐ")]
     public Transform[] patrolPoints;
     public float pointReachedDistance = 0.5f;
 
-    [Header("Атака")]
+    [Header("ГЂГІГ ГЄГ ")]
     public int attackDamage = 10;
     public float attackCooldown = 2f;
     public float attackDuration = 1f;
 
-    [Header("Метод проверки попадания")]
-    public bool useSwordCollision = true; // Вкл/выкл проверку через коллизию меча
-    public GameObject swordObject; // Ссылка на объект меча
-    public Collider swordCollider; // Коллайдер меча для определения попадания
-    public float attackHitRadius = 1.5f; // Радиус попадания (если не используется меч)
+    [Header("ГЊГҐГІГ®Г¤ ГЇГ°Г®ГўГҐГ°ГЄГЁ ГЇГ®ГЇГ Г¤Г Г­ГЁГї")]
+    public bool useSwordCollision = true; // Г‚ГЄГ«/ГўГ»ГЄГ« ГЇГ°Г®ГўГҐГ°ГЄГі Г·ГҐГ°ГҐГ§ ГЄГ®Г«Г«ГЁГ§ГЁГѕ Г¬ГҐГ·Г 
+    public GameObject swordObject; // Г‘Г±Г»Г«ГЄГ  Г­Г  Г®ГЎГєГҐГЄГІ Г¬ГҐГ·Г 
+    public Collider swordCollider; // ГЉГ®Г«Г«Г Г©Г¤ГҐГ° Г¬ГҐГ·Г  Г¤Г«Гї Г®ГЇГ°ГҐГ¤ГҐГ«ГҐГ­ГЁГї ГЇГ®ГЇГ Г¤Г Г­ГЁГї
+    public float attackHitRadius = 1.5f; // ГђГ Г¤ГЁГіГ± ГЇГ®ГЇГ Г¤Г Г­ГЁГї (ГҐГ±Г«ГЁ Г­ГҐ ГЁГ±ГЇГ®Г«ГјГ§ГіГҐГІГ±Гї Г¬ГҐГ·)
 
-    [Header("Эффекты")]
+    [Header("ГќГґГґГҐГЄГІГ»")]
     public GameObject deathEffect;
     public AudioClip hurtSound;
     public AudioClip deathSound;
     public AudioClip attackSound;
-    public AudioClip hitSound; // Звук попадания по игроку
+    public AudioClip hitSound; // Г‡ГўГіГЄ ГЇГ®ГЇГ Г¤Г Г­ГЁГї ГЇГ® ГЁГЈГ°Г®ГЄГі
 
-    // Компоненты
+    // ГЉГ®Г¬ГЇГ®Г­ГҐГ­ГІГ»
     private Animator animator;
     private AudioSource audioSource;
     private Transform player;
     private CharacterControl playerHealth;
 
-    // Состояния
+    // Г‘Г®Г±ГІГ®ГїГ­ГЁГї
     private enum EnemyState { Patrolling, Chasing, Attacking, Dead }
     private EnemyState currentState = EnemyState.Patrolling;
 
-    // Переменные для логики
+    // ГЏГҐГ°ГҐГ¬ГҐГ­Г­Г»ГҐ Г¤Г«Гї Г«Г®ГЈГЁГЄГЁ
     private int currentPatrolIndex = 0;
     private bool canAttack = true;
     private Vector3 currentTargetPosition;
     private float originalMoveSpeed;
     private bool isDead = false;
     private bool isAttacking = false;
-    private bool hasHitPlayer = false; // Флаг, что уже попали по игроку в этой атаке
+    private bool hasHitPlayer = false; // Г”Г«Г ГЈ, Г·ГІГ® ГіГ¦ГҐ ГЇГ®ГЇГ Г«ГЁ ГЇГ® ГЁГЈГ°Г®ГЄГі Гў ГЅГІГ®Г© Г ГІГ ГЄГҐ
 
     void Start()
     {
@@ -62,23 +62,23 @@ public class EnemyAI : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player").transform;
         playerHealth = player.GetComponent<CharacterControl>();
 
-        // Если AudioSource нет - добавляем
+        // Г…Г±Г«ГЁ AudioSource Г­ГҐГІ - Г¤Г®ГЎГ ГўГ«ГїГҐГ¬
         if (audioSource == null)
             audioSource = gameObject.AddComponent<AudioSource>();
 
         originalMoveSpeed = moveSpeed;
 
-        // Настройка меча (если используется проверка через коллизию)
+        // ГЌГ Г±ГІГ°Г®Г©ГЄГ  Г¬ГҐГ·Г  (ГҐГ±Г«ГЁ ГЁГ±ГЇГ®Г«ГјГ§ГіГҐГІГ±Гї ГЇГ°Г®ГўГҐГ°ГЄГ  Г·ГҐГ°ГҐГ§ ГЄГ®Г«Г«ГЁГ§ГЁГѕ)
         if (useSwordCollision)
         {
-            // Отключаем коллайдер меча по умолчанию
+            // ГЋГІГЄГ«ГѕГ·Г ГҐГ¬ ГЄГ®Г«Г«Г Г©Г¤ГҐГ° Г¬ГҐГ·Г  ГЇГ® ГіГ¬Г®Г«Г·Г Г­ГЁГѕ
             if (swordCollider != null)
             {
                 swordCollider.enabled = false;
                 swordCollider.isTrigger = true;
             }
 
-            // Находим меч автоматически если не указан
+            // ГЌГ ГµГ®Г¤ГЁГ¬ Г¬ГҐГ· Г ГўГІГ®Г¬Г ГІГЁГ·ГҐГ±ГЄГЁ ГҐГ±Г«ГЁ Г­ГҐ ГіГЄГ Г§Г Г­
             if (swordObject == null)
             {
                 FindSwordInChildren();
@@ -90,7 +90,7 @@ public class EnemyAI : MonoBehaviour
             }
         }
 
-        // Начинаем патрулирование
+        // ГЌГ Г·ГЁГ­Г ГҐГ¬ ГЇГ ГІГ°ГіГ«ГЁГ°Г®ГўГ Г­ГЁГҐ
         if (patrolPoints != null && patrolPoints.Length > 0)
         {
             currentTargetPosition = patrolPoints[0].position;
@@ -106,14 +106,14 @@ public class EnemyAI : MonoBehaviour
     {
         if (isDead) return;
 
-        // Проверяем, жив ли игрок
+        // ГЏГ°Г®ГўГҐГ°ГїГҐГ¬, Г¦ГЁГў Г«ГЁ ГЁГЈГ°Г®ГЄ
         if (playerHealth != null && playerHealth.GetCurrentHealth() <= 0)
         {
             ReturnToPatrol();
             return;
         }
 
-        // Проверяем расстояние до игрока
+        // ГЏГ°Г®ГўГҐГ°ГїГҐГ¬ Г°Г Г±Г±ГІГ®ГїГ­ГЁГҐ Г¤Г® ГЁГЈГ°Г®ГЄГ 
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
         switch (currentState)
@@ -125,41 +125,41 @@ public class EnemyAI : MonoBehaviour
                 HandleChaseState(distanceToPlayer);
                 break;
             case EnemyState.Attacking:
-                // В состоянии атаки ничего не делаем - ждем завершения анимации
+                // Г‚ Г±Г®Г±ГІГ®ГїГ­ГЁГЁ Г ГІГ ГЄГЁ Г­ГЁГ·ГҐГЈГ® Г­ГҐ Г¤ГҐГ«Г ГҐГ¬ - Г¦Г¤ГҐГ¬ Г§Г ГўГҐГ°ГёГҐГ­ГЁГї Г Г­ГЁГ¬Г Г¶ГЁГЁ
                 break;
         }
     }
 
     void HandlePatrolState(float distanceToPlayer)
     {
-        // Проверяем, видим ли игрока
+        // ГЏГ°Г®ГўГҐГ°ГїГҐГ¬, ГўГЁГ¤ГЁГ¬ Г«ГЁ ГЁГЈГ°Г®ГЄГ 
         if (distanceToPlayer <= detectionRange && CanSeePlayer())
         {
             StartChasing();
             return;
         }
 
-        // Патрулируем без остановок
+        // ГЏГ ГІГ°ГіГ«ГЁГ°ГіГҐГ¬ ГЎГҐГ§ Г®Г±ГІГ Г­Г®ГўГ®ГЄ
         PatrolToPoint();
     }
 
     void HandleChaseState(float distanceToPlayer)
     {
-        // Если игрок мертв или вышел из радиуса обнаружения, возвращаемся к патрулированию
+        // Г…Г±Г«ГЁ ГЁГЈГ°Г®ГЄ Г¬ГҐГ°ГІГў ГЁГ«ГЁ ГўГ»ГёГҐГ« ГЁГ§ Г°Г Г¤ГЁГіГ±Г  Г®ГЎГ­Г Г°ГіГ¦ГҐГ­ГЁГї, ГўГ®Г§ГўГ°Г Г№Г ГҐГ¬Г±Гї ГЄ ГЇГ ГІГ°ГіГ«ГЁГ°Г®ГўГ Г­ГЁГѕ
         if (distanceToPlayer > detectionRange || (playerHealth != null && playerHealth.GetCurrentHealth() <= 0))
         {
             ReturnToPatrol();
             return;
         }
 
-        // Если можем атаковать - атакуем
+        // Г…Г±Г«ГЁ Г¬Г®Г¦ГҐГ¬ Г ГІГ ГЄГ®ГўГ ГІГј - Г ГІГ ГЄГіГҐГ¬
         if (distanceToPlayer <= attackRange && canAttack && !isAttacking)
         {
             AttackPlayer();
             return;
         }
 
-        // Преследуем игрока
+        // ГЏГ°ГҐГ±Г«ГҐГ¤ГіГҐГ¬ ГЁГЈГ°Г®ГЄГ 
         ChasePlayer();
     }
 
@@ -167,24 +167,24 @@ public class EnemyAI : MonoBehaviour
     {
         if (patrolPoints.Length == 0) return;
 
-        // Двигаемся к текущей точке
+        // Г„ГўГЁГЈГ ГҐГ¬Г±Гї ГЄ ГІГҐГЄГіГ№ГҐГ© ГІГ®Г·ГЄГҐ
         Vector3 direction = (currentTargetPosition - transform.position).normalized;
         direction.y = 0;
 
-        // Движение
+        // Г„ГўГЁГ¦ГҐГ­ГЁГҐ
         transform.position += direction * moveSpeed * Time.deltaTime;
 
-        // Поворот
+        // ГЏГ®ГўГ®Г°Г®ГІ
         if (direction != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
 
-        // Проверяем, достигли ли точки и сразу переходим к следующей
+        // ГЏГ°Г®ГўГҐГ°ГїГҐГ¬, Г¤Г®Г±ГІГЁГЈГ«ГЁ Г«ГЁ ГІГ®Г·ГЄГЁ ГЁ Г±Г°Г Г§Гі ГЇГҐГ°ГҐГµГ®Г¤ГЁГ¬ ГЄ Г±Г«ГҐГ¤ГіГѕГ№ГҐГ©
         if (Vector3.Distance(transform.position, currentTargetPosition) <= pointReachedDistance)
         {
-            // Немедленно переходим к следующей точке без остановки
+            // ГЌГҐГ¬ГҐГ¤Г«ГҐГ­Г­Г® ГЇГҐГ°ГҐГµГ®Г¤ГЁГ¬ ГЄ Г±Г«ГҐГ¤ГіГѕГ№ГҐГ© ГІГ®Г·ГЄГҐ ГЎГҐГ§ Г®Г±ГІГ Г­Г®ГўГЄГЁ
             currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Length;
             currentTargetPosition = patrolPoints[currentPatrolIndex].position;
         }
@@ -199,10 +199,10 @@ public class EnemyAI : MonoBehaviour
         Vector3 direction = (player.position - transform.position).normalized;
         direction.y = 0;
 
-        // Движение к игроку
+        // Г„ГўГЁГ¦ГҐГ­ГЁГҐ ГЄ ГЁГЈГ°Г®ГЄГі
         transform.position += direction * moveSpeed * Time.deltaTime;
 
-        // Поворот к игроку
+        // ГЏГ®ГўГ®Г°Г®ГІ ГЄ ГЁГЈГ°Г®ГЄГі
         if (direction != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
@@ -215,10 +215,10 @@ public class EnemyAI : MonoBehaviour
     void StartChasing()
     {
         currentState = EnemyState.Chasing;
-        moveSpeed = originalMoveSpeed * 1.5f; // Увеличиваем скорость при преследовании
+        moveSpeed = originalMoveSpeed * 1.5f; // Г“ГўГҐГ«ГЁГ·ГЁГўГ ГҐГ¬ Г±ГЄГ®Г°Г®Г±ГІГј ГЇГ°ГЁ ГЇГ°ГҐГ±Г«ГҐГ¤Г®ГўГ Г­ГЁГЁ
         SetRunningAnimation(true);
 
-        Debug.Log("Игрок обнаружен! Начинаю преследование.");
+        Debug.Log("Г€ГЈГ°Г®ГЄ Г®ГЎГ­Г Г°ГіГ¦ГҐГ­! ГЌГ Г·ГЁГ­Г Гѕ ГЇГ°ГҐГ±Г«ГҐГ¤Г®ГўГ Г­ГЁГҐ.");
     }
 
     void ReturnToPatrol()
@@ -228,12 +228,12 @@ public class EnemyAI : MonoBehaviour
         currentState = EnemyState.Patrolling;
         moveSpeed = originalMoveSpeed;
 
-        // Возвращаемся к ближайшей точке патрулирования
+        // Г‚Г®Г§ГўГ°Г Г№Г ГҐГ¬Г±Гї ГЄ ГЎГ«ГЁГ¦Г Г©ГёГҐГ© ГІГ®Г·ГЄГҐ ГЇГ ГІГ°ГіГ«ГЁГ°Г®ГўГ Г­ГЁГї
         FindNearestPatrolPoint();
 
         SetRunningAnimation(true);
 
-        Debug.Log("Игрок мертв или потерян! Возвращаюсь к патрулированию.");
+        Debug.Log("Г€ГЈГ°Г®ГЄ Г¬ГҐГ°ГІГў ГЁГ«ГЁ ГЇГ®ГІГҐГ°ГїГ­! Г‚Г®Г§ГўГ°Г Г№Г ГѕГ±Гј ГЄ ГЇГ ГІГ°ГіГ«ГЁГ°Г®ГўГ Г­ГЁГѕ.");
     }
 
     void AttackPlayer()
@@ -243,7 +243,7 @@ public class EnemyAI : MonoBehaviour
         hasHitPlayer = false;
         SetRunningAnimation(false);
 
-        // Поворачиваемся к игроку перед атакой
+        // ГЏГ®ГўГ®Г°Г Г·ГЁГўГ ГҐГ¬Г±Гї ГЄ ГЁГЈГ°Г®ГЄГі ГЇГҐГ°ГҐГ¤ Г ГІГ ГЄГ®Г©
         if (player != null)
         {
             Vector3 lookDirection = (player.position - transform.position).normalized;
@@ -254,39 +254,39 @@ public class EnemyAI : MonoBehaviour
             }
         }
 
-        // Запускаем анимацию атаки
+        // Г‡Г ГЇГіГ±ГЄГ ГҐГ¬ Г Г­ГЁГ¬Г Г¶ГЁГѕ Г ГІГ ГЄГЁ
         animator.Play("Attack");
 
-        // Звук атаки
+        // Г‡ГўГіГЄ Г ГІГ ГЄГЁ
         if (attackSound != null)
             audioSource.PlayOneShot(attackSound);
 
-        // Включаем проверку попадания
+        // Г‚ГЄГ«ГѕГ·Г ГҐГ¬ ГЇГ°Г®ГўГҐГ°ГЄГі ГЇГ®ГЇГ Г¤Г Г­ГЁГї
         if (useSwordCollision)
         {
-            // Включаем коллайдер меча
+            // Г‚ГЄГ«ГѕГ·Г ГҐГ¬ ГЄГ®Г«Г«Г Г©Г¤ГҐГ° Г¬ГҐГ·Г 
             StartCoroutine(ActivateSwordCollider());
         }
         else
         {
-            // Используем проверку по радиусу
+            // Г€Г±ГЇГ®Г«ГјГ§ГіГҐГ¬ ГЇГ°Г®ГўГҐГ°ГЄГі ГЇГ® Г°Г Г¤ГЁГіГ±Гі
             StartCoroutine(CheckRadiusHit());
         }
 
-        // Перезарядка атаки
+        // ГЏГҐГ°ГҐГ§Г Г°ГїГ¤ГЄГ  Г ГІГ ГЄГЁ
         canAttack = false;
         StartCoroutine(AttackCooldown());
 
-        // Возвращаемся к преследованию после атаки
+        // Г‚Г®Г§ГўГ°Г Г№Г ГҐГ¬Г±Гї ГЄ ГЇГ°ГҐГ±Г«ГҐГ¤Г®ГўГ Г­ГЁГѕ ГЇГ®Г±Г«ГҐ Г ГІГ ГЄГЁ
         StartCoroutine(ReturnToChaseAfterAttack());
 
-        Debug.Log("Атакую игрока!");
+        Debug.Log("ГЂГІГ ГЄГіГѕ ГЁГЈГ°Г®ГЄГ !");
     }
 
-    // Включает коллайдер меча в нужный момент анимации
+    // Г‚ГЄГ«ГѕГ·Г ГҐГІ ГЄГ®Г«Г«Г Г©Г¤ГҐГ° Г¬ГҐГ·Г  Гў Г­ГіГ¦Г­Г»Г© Г¬Г®Г¬ГҐГ­ГІ Г Г­ГЁГ¬Г Г¶ГЁГЁ
     IEnumerator ActivateSwordCollider()
     {
-        // Задержка перед включением коллайдера (когда меч начинает двигаться)
+        // Г‡Г Г¤ГҐГ°Г¦ГЄГ  ГЇГҐГ°ГҐГ¤ ГўГЄГ«ГѕГ·ГҐГ­ГЁГҐГ¬ ГЄГ®Г«Г«Г Г©Г¤ГҐГ°Г  (ГЄГ®ГЈГ¤Г  Г¬ГҐГ· Г­Г Г·ГЁГ­Г ГҐГІ Г¤ГўГЁГЈГ ГІГјГ±Гї)
         yield return new WaitForSeconds(0.3f);
 
         if (swordCollider != null)
@@ -294,7 +294,7 @@ public class EnemyAI : MonoBehaviour
             swordCollider.enabled = true;
         }
 
-        // Отключаем коллайдер через время
+        // ГЋГІГЄГ«ГѕГ·Г ГҐГ¬ ГЄГ®Г«Г«Г Г©Г¤ГҐГ° Г·ГҐГ°ГҐГ§ ГўГ°ГҐГ¬Гї
         yield return new WaitForSeconds(0.4f);
 
         if (swordCollider != null)
@@ -303,23 +303,23 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    // Проверка попадания по радиусу (если не используется меч)
+    // ГЏГ°Г®ГўГҐГ°ГЄГ  ГЇГ®ГЇГ Г¤Г Г­ГЁГї ГЇГ® Г°Г Г¤ГЁГіГ±Гі (ГҐГ±Г«ГЁ Г­ГҐ ГЁГ±ГЇГ®Г«ГјГ§ГіГҐГІГ±Гї Г¬ГҐГ·)
     IEnumerator CheckRadiusHit()
     {
-        // Задержка перед проверкой (когда атака достигает пика)
+        // Г‡Г Г¤ГҐГ°Г¦ГЄГ  ГЇГҐГ°ГҐГ¤ ГЇГ°Г®ГўГҐГ°ГЄГ®Г© (ГЄГ®ГЈГ¤Г  Г ГІГ ГЄГ  Г¤Г®Г±ГІГЁГЈГ ГҐГІ ГЇГЁГЄГ )
         yield return new WaitForSeconds(0.4f);
 
         if (isDead||!isAttacking||hasHitPlayer)
             yield break;
 
-        // Проверяем, находится ли игрок в радиусе атаки
+        // ГЏГ°Г®ГўГҐГ°ГїГҐГ¬, Г­Г ГµГ®Г¤ГЁГІГ±Гї Г«ГЁ ГЁГЈГ°Г®ГЄ Гў Г°Г Г¤ГЁГіГ±ГҐ Г ГІГ ГЄГЁ
         if (player != null && Vector3.Distance(transform.position, player.position) <= attackHitRadius)
         {
             DealDamageToPlayer();
         }
     }
 
-    // Нанесение урона игроку
+    // ГЌГ Г­ГҐГ±ГҐГ­ГЁГҐ ГіГ°Г®Г­Г  ГЁГЈГ°Г®ГЄГі
     void DealDamageToPlayer()
     {
         if (playerHealth != null && playerHealth.GetCurrentHealth() > 0)
@@ -327,30 +327,30 @@ public class EnemyAI : MonoBehaviour
             playerHealth.TakeDamage(attackDamage);
             hasHitPlayer = true;
 
-            // Звук попадания
+            // Г‡ГўГіГЄ ГЇГ®ГЇГ Г¤Г Г­ГЁГї
             if (hitSound != null)
                 audioSource.PlayOneShot(hitSound);
 
-            Debug.Log($"Попал по игроку! Нанесено урона: {attackDamage}");
+            Debug.Log($"ГЏГ®ГЇГ Г« ГЇГ® ГЁГЈГ°Г®ГЄГі! ГЌГ Г­ГҐГ±ГҐГ­Г® ГіГ°Г®Г­Г : {attackDamage}");
         }
     }
 
-    // Обработчик попадания меча (вызывается из события анимации или из OnTriggerEnter)
+    // ГЋГЎГ°Г ГЎГ®ГІГ·ГЁГЄ ГЇГ®ГЇГ Г¤Г Г­ГЁГї Г¬ГҐГ·Г  (ГўГ»Г§Г»ГўГ ГҐГІГ±Гї ГЁГ§ Г±Г®ГЎГ»ГІГЁГї Г Г­ГЁГ¬Г Г¶ГЁГЁ ГЁГ«ГЁ ГЁГ§ OnTriggerEnter)
     public void OnSwordHit(Collider other)
     {
         if (!useSwordCollision || isDead || !isAttacking || hasHitPlayer) return;
 
-        // Проверяем, попал ли меч в игрока
+        // ГЏГ°Г®ГўГҐГ°ГїГҐГ¬, ГЇГ®ГЇГ Г« Г«ГЁ Г¬ГҐГ· Гў ГЁГЈГ°Г®ГЄГ 
         if (other.CompareTag("Player"))
         {
             DealDamageToPlayer();
         }
     }
 
-    // Автоматический поиск меча в дочерних объектах
+    // ГЂГўГІГ®Г¬Г ГІГЁГ·ГҐГ±ГЄГЁГ© ГЇГ®ГЁГ±ГЄ Г¬ГҐГ·Г  Гў Г¤Г®Г·ГҐГ°Г­ГЁГµ Г®ГЎГєГҐГЄГІГ Гµ
     void FindSwordInChildren()
     {
-        // Ищем объект с тегом Sword или содержащий sword в имени
+        // Г€Г№ГҐГ¬ Г®ГЎГєГҐГЄГІ Г± ГІГҐГЈГ®Г¬ Sword ГЁГ«ГЁ Г±Г®Г¤ГҐГ°Г¦Г Г№ГЁГ© sword Гў ГЁГ¬ГҐГ­ГЁ
         foreach (Transform child in GetComponentsInChildren<Transform>())
         {
             if (child.CompareTag("Sword") || child.name.ToLower().Contains("sword"))
@@ -364,35 +364,35 @@ public class EnemyAI : MonoBehaviour
                     swordCollider.isTrigger = true;
                 }
 
-                Debug.Log($"Найден меч: {child.name}");
+                Debug.Log($"ГЌГ Г©Г¤ГҐГ­ Г¬ГҐГ·: {child.name}");
                 break;
             }
         }
 
         if (swordObject == null)
         {
-            Debug.LogWarning("Меч не найден! Добавьте меч как дочерний объект или укажите вручную.");
+            Debug.LogWarning("ГЊГҐГ· Г­ГҐ Г­Г Г©Г¤ГҐГ­! Г„Г®ГЎГ ГўГјГІГҐ Г¬ГҐГ· ГЄГ ГЄ Г¤Г®Г·ГҐГ°Г­ГЁГ© Г®ГЎГєГҐГЄГІ ГЁГ«ГЁ ГіГЄГ Г¦ГЁГІГҐ ГўГ°ГіГ·Г­ГіГѕ.");
         }
     }
 
-    // Метод для вызова из события анимации (Animation Event)
+    // ГЊГҐГІГ®Г¤ Г¤Г«Гї ГўГ»Г§Г®ГўГ  ГЁГ§ Г±Г®ГЎГ»ГІГЁГї Г Г­ГЁГ¬Г Г¶ГЁГЁ (Animation Event)
     public void AnimationEvent_AttackStart()
     {
         if (!useSwordCollision) return;
 
-        // Можно использовать для включения коллайдера в нужный момент
+        // ГЊГ®Г¦Г­Г® ГЁГ±ГЇГ®Г«ГјГ§Г®ГўГ ГІГј Г¤Г«Гї ГўГЄГ«ГѕГ·ГҐГ­ГЁГї ГЄГ®Г«Г«Г Г©Г¤ГҐГ°Г  Гў Г­ГіГ¦Г­Г»Г© Г¬Г®Г¬ГҐГ­ГІ
         if (swordCollider != null)
         {
             swordCollider.enabled = true;
         }
     }
 
-    // Метод для вызова из события анимации (Animation Event)
+    // ГЊГҐГІГ®Г¤ Г¤Г«Гї ГўГ»Г§Г®ГўГ  ГЁГ§ Г±Г®ГЎГ»ГІГЁГї Г Г­ГЁГ¬Г Г¶ГЁГЁ (Animation Event)
     public void AnimationEvent_AttackEnd()
     {
         if (!useSwordCollision) return;
 
-        // Отключаем коллайдер меча
+        // ГЋГІГЄГ«ГѕГ·Г ГҐГ¬ ГЄГ®Г«Г«Г Г©Г¤ГҐГ° Г¬ГҐГ·Г 
         if (swordCollider != null)
         {
             swordCollider.enabled = false;
@@ -400,19 +400,19 @@ public class EnemyAI : MonoBehaviour
         hasHitPlayer = false;
     }
 
-    // Метод для вызова из события анимации (Animation Event) - для проверки по радиусу
+    // ГЊГҐГІГ®Г¤ Г¤Г«Гї ГўГ»Г§Г®ГўГ  ГЁГ§ Г±Г®ГЎГ»ГІГЁГї Г Г­ГЁГ¬Г Г¶ГЁГЁ (Animation Event) - Г¤Г«Гї ГЇГ°Г®ГўГҐГ°ГЄГЁ ГЇГ® Г°Г Г¤ГЁГіГ±Гі
     public void AnimationEvent_CheckHit()
     {
         if (useSwordCollision) return;
 
-        // Проверяем попадание в момент анимации
+        // ГЏГ°Г®ГўГҐГ°ГїГҐГ¬ ГЇГ®ГЇГ Г¤Г Г­ГЁГҐ Гў Г¬Г®Г¬ГҐГ­ГІ Г Г­ГЁГ¬Г Г¶ГЁГЁ
         if (player != null && Vector3.Distance(transform.position, player.position) <= attackHitRadius)
         {
             DealDamageToPlayer();
         }
     }
 
-    // Обработка триггера меча (если используется триггер)
+    // ГЋГЎГ°Г ГЎГ®ГІГЄГ  ГІГ°ГЁГЈГЈГҐГ°Г  Г¬ГҐГ·Г  (ГҐГ±Г«ГЁ ГЁГ±ГЇГ®Г«ГјГ§ГіГҐГІГ±Гї ГІГ°ГЁГЈГЈГҐГ°)
     void OnTriggerEnter(Collider other)
     {
         if (!useSwordCollision || !isAttacking || hasHitPlayer) return;
@@ -426,7 +426,7 @@ public class EnemyAI : MonoBehaviour
 
         Vector3 directionToPlayer = (player.position - transform.position).normalized;
 
-        // Проверяем, нет ли препятствий между врагом и игроком
+        // ГЏГ°Г®ГўГҐГ°ГїГҐГ¬, Г­ГҐГІ Г«ГЁ ГЇГ°ГҐГЇГїГІГ±ГІГўГЁГ© Г¬ГҐГ¦Г¤Гі ГўГ°Г ГЈГ®Г¬ ГЁ ГЁГЈГ°Г®ГЄГ®Г¬
         if (Physics.Raycast(transform.position + Vector3.up, directionToPlayer, out RaycastHit hit, detectionRange, ~obstacleLayer))
         {
             return hit.collider.CompareTag("Player");
@@ -464,33 +464,33 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    // Метод для получения урона от прыжковой атаки
+    // ГЊГҐГІГ®Г¤ Г¤Г«Гї ГЇГ®Г«ГіГ·ГҐГ­ГЁГї ГіГ°Г®Г­Г  Г®ГІ ГЇГ°Г»Г¦ГЄГ®ГўГ®Г© Г ГІГ ГЄГЁ
     public void TakeEnemyDamage(float damage)
     {
         if (isDead) return;
 
         health -= damage;
 
-        // Визуальная обратная связь
+        // Г‚ГЁГ§ГіГ Г«ГјГ­Г Гї Г®ГЎГ°Г ГІГ­Г Гї Г±ГўГїГ§Гј
         StartCoroutine(DamageFlash());
 
-        // Звук получения урона
+        // Г‡ГўГіГЄ ГЇГ®Г«ГіГ·ГҐГ­ГЁГї ГіГ°Г®Г­Г 
         if (hurtSound != null)
             audioSource.PlayOneShot(hurtSound);
 
-        // Если получили урон - начинаем преследование
+        // Г…Г±Г«ГЁ ГЇГ®Г«ГіГ·ГЁГ«ГЁ ГіГ°Г®Г­ - Г­Г Г·ГЁГ­Г ГҐГ¬ ГЇГ°ГҐГ±Г«ГҐГ¤Г®ГўГ Г­ГЁГҐ
         if (currentState == EnemyState.Patrolling)
         {
             StartChasing();
         }
 
-        // Проверяем смерть
+        // ГЏГ°Г®ГўГҐГ°ГїГҐГ¬ Г±Г¬ГҐГ°ГІГј
         if (health <= 0)
         {
             Die();
         }
 
-        Debug.Log($"Враг получил {damage} урона. Осталось здоровья: {health}");
+        Debug.Log($"Г‚Г°Г ГЈ ГЇГ®Г«ГіГ·ГЁГ« {damage} ГіГ°Г®Г­Г . ГЋГ±ГІГ Г«Г®Г±Гј Г§Г¤Г®Г°Г®ГўГјГї: {health}");
     }
 
     void Die()
@@ -499,33 +499,33 @@ public class EnemyAI : MonoBehaviour
         currentState = EnemyState.Dead;
         isAttacking = false;
 
-        // Отключаем коллайдер меча
+        // ГЋГІГЄГ«ГѕГ·Г ГҐГ¬ ГЄГ®Г«Г«Г Г©Г¤ГҐГ° Г¬ГҐГ·Г 
         if (swordCollider != null && useSwordCollision)
             swordCollider.enabled = false;
 
-        // Анимация смерти
+        // ГЂГ­ГЁГ¬Г Г¶ГЁГї Г±Г¬ГҐГ°ГІГЁ
         animator.Play("DieEnemy");
 
-        // Звук смерти
+        // Г‡ГўГіГЄ Г±Г¬ГҐГ°ГІГЁ
         if (deathSound != null)
             audioSource.PlayOneShot(deathSound);
 
-        // Эффект смерти
+        // ГќГґГґГҐГЄГІ Г±Г¬ГҐГ°ГІГЁ
         if (deathEffect != null)
             Instantiate(deathEffect, transform.position, Quaternion.identity);
 
-        // Отключаем коллайдер врага
+        // ГЋГІГЄГ«ГѕГ·Г ГҐГ¬ ГЄГ®Г«Г«Г Г©Г¤ГҐГ° ГўГ°Г ГЈГ 
         Collider collider = GetComponent<Collider>();
         if (collider != null)
             collider.enabled = false;
 
-        Debug.Log("Враг умер!");
+        Debug.Log("Г‚Г°Г ГЈ ГіГ¬ГҐГ°!");
 
-        // Уничтожаем объект через некоторое время
+        // Г“Г­ГЁГ·ГІГ®Г¦Г ГҐГ¬ Г®ГЎГєГҐГЄГІ Г·ГҐГ°ГҐГ§ Г­ГҐГЄГ®ГІГ®Г°Г®ГҐ ГўГ°ГҐГ¬Гї
         StartCoroutine(DestroyAfterDeath());
     }
 
-    // Корутины
+    // ГЉГ®Г°ГіГІГЁГ­Г»
     IEnumerator AttackCooldown()
     {
         yield return new WaitForSeconds(attackCooldown);
@@ -540,7 +540,7 @@ public class EnemyAI : MonoBehaviour
         {
             isAttacking = false;
 
-            // Проверяем, жив ли игрок перед возвращением к преследованию
+            // ГЏГ°Г®ГўГҐГ°ГїГҐГ¬, Г¦ГЁГў Г«ГЁ ГЁГЈГ°Г®ГЄ ГЇГҐГ°ГҐГ¤ ГўГ®Г§ГўГ°Г Г№ГҐГ­ГЁГҐГ¬ ГЄ ГЇГ°ГҐГ±Г«ГҐГ¤Г®ГўГ Г­ГЁГѕ
             if (playerHealth != null && playerHealth.GetCurrentHealth() > 0)
             {
                 currentState = EnemyState.Chasing;
@@ -555,7 +555,7 @@ public class EnemyAI : MonoBehaviour
 
     IEnumerator DamageFlash()
     {
-        // Простая визуальная обратная связь
+        // ГЏГ°Г®Г±ГІГ Гї ГўГЁГ§ГіГ Г«ГјГ­Г Гї Г®ГЎГ°Г ГІГ­Г Гї Г±ГўГїГ§Гј
         MeshRenderer renderer = GetComponent<MeshRenderer>();
         if (renderer != null)
         {
@@ -568,21 +568,21 @@ public class EnemyAI : MonoBehaviour
 
     IEnumerator DestroyAfterDeath()
     {
-        // Ждем завершения анимации смерти
+        // Г†Г¤ГҐГ¬ Г§Г ГўГҐГ°ГёГҐГ­ГЁГї Г Г­ГЁГ¬Г Г¶ГЁГЁ Г±Г¬ГҐГ°ГІГЁ
         yield return new WaitForSeconds(3f);
         Destroy(gameObject);
     }
 
 
-    // ========== МЕТОДЫ ДЛЯ СОХРАНЕНИЯ ==========
+    // ========== ГЊГ…Г’ГЋГ„Г› Г„Г‹Гџ Г‘ГЋГ•ГђГЂГЌГ…ГЌГ€Гџ ==========
 
-    // Получить текущее состояние как строку
+    // ГЏГ®Г«ГіГ·ГЁГІГј ГІГҐГЄГіГ№ГҐГҐ Г±Г®Г±ГІГ®ГїГ­ГЁГҐ ГЄГ ГЄ Г±ГІГ°Г®ГЄГі
     public string GetStateForSave()
     {
         return currentState.ToString();
     }
 
-    // Установить состояние из строки
+    // Г“Г±ГІГ Г­Г®ГўГЁГІГј Г±Г®Г±ГІГ®ГїГ­ГЁГҐ ГЁГ§ Г±ГІГ°Г®ГЄГЁ
     public void SetStateFromSave(string state)
     {
         try
@@ -591,48 +591,48 @@ public class EnemyAI : MonoBehaviour
         }
         catch
         {
-            Debug.LogWarning($"Не удалось распознать состояние: {state}");
+            Debug.LogWarning($"ГЌГҐ ГіГ¤Г Г«Г®Г±Гј Г°Г Г±ГЇГ®Г§Г­Г ГІГј Г±Г®Г±ГІГ®ГїГ­ГЁГҐ: {state}");
             currentState = EnemyState.Patrolling;
         }
     }
 
-    // Получить здоровье
+    // ГЏГ®Г«ГіГ·ГЁГІГј Г§Г¤Г®Г°Г®ГўГјГҐ
     public float GetHealthForSave()
     {
         return health;
     }
 
-    // Установить здоровье
+    // Г“Г±ГІГ Г­Г®ГўГЁГІГј Г§Г¤Г®Г°Г®ГўГјГҐ
     public void SetHealthFromSave(float newHealth)
     {
         health = newHealth;
 
         if (health <= 0)
         {
-            // Если здоровье 0 или меньше, враг должен быть мертв
+            // Г…Г±Г«ГЁ Г§Г¤Г®Г°Г®ГўГјГҐ 0 ГЁГ«ГЁ Г¬ГҐГ­ГјГёГҐ, ГўГ°Г ГЈ Г¤Г®Г«Г¦ГҐГ­ ГЎГ»ГІГј Г¬ГҐГ°ГІГў
             Die();
         }
     }
 
-    // Установить позицию (для загрузки)
+    // Г“Г±ГІГ Г­Г®ГўГЁГІГј ГЇГ®Г§ГЁГ¶ГЁГѕ (Г¤Г«Гї Г§Г ГЈГ°ГіГ§ГЄГЁ)
     public void SetPosition(Vector3 position)
     {
         transform.position = position;
     }
 
-    // Установить вращение (для загрузки)
+    // Г“Г±ГІГ Г­Г®ГўГЁГІГј ГўГ°Г Г№ГҐГ­ГЁГҐ (Г¤Г«Гї Г§Г ГЈГ°ГіГ§ГЄГЁ)
     public void SetRotation(Quaternion rotation)
     {
         transform.rotation = rotation;
     }
 
-    // Получить индекс текущей точки патрулирования
+    // ГЏГ®Г«ГіГ·ГЁГІГј ГЁГ­Г¤ГҐГЄГ± ГІГҐГЄГіГ№ГҐГ© ГІГ®Г·ГЄГЁ ГЇГ ГІГ°ГіГ«ГЁГ°Г®ГўГ Г­ГЁГї
     public int GetCurrentPatrolIndex()
     {
         return currentPatrolIndex;
     }
 
-    // Установить индекс точки патрулирования
+    // Г“Г±ГІГ Г­Г®ГўГЁГІГј ГЁГ­Г¤ГҐГЄГ± ГІГ®Г·ГЄГЁ ГЇГ ГІГ°ГіГ«ГЁГ°Г®ГўГ Г­ГЁГї
     public void SetCurrentPatrolIndex(int index)
     {
         if (patrolPoints != null && patrolPoints.Length > 0)
@@ -645,19 +645,19 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    // Получить целевую позицию
+    // ГЏГ®Г«ГіГ·ГЁГІГј Г¶ГҐГ«ГҐГўГіГѕ ГЇГ®Г§ГЁГ¶ГЁГѕ
     public Vector3 GetTargetPosition()
     {
         return currentTargetPosition;
     }
 
-    // Установить целевую позицию
+    // Г“Г±ГІГ Г­Г®ГўГЁГІГј Г¶ГҐГ«ГҐГўГіГѕ ГЇГ®Г§ГЁГ¶ГЁГѕ
     public void SetTargetPosition(Vector3 position)
     {
         currentTargetPosition = position;
     }
 
-    // Отключить врага (при загрузке мертвого врага)
+    // ГЋГІГЄГ«ГѕГ·ГЁГІГј ГўГ°Г ГЈГ  (ГЇГ°ГЁ Г§Г ГЈГ°ГіГ§ГЄГҐ Г¬ГҐГ°ГІГўГ®ГЈГ® ГўГ°Г ГЈГ )
     public void DisableEnemy()
     {
         isDead = true;
@@ -672,7 +672,7 @@ public class EnemyAI : MonoBehaviour
         if (collider != null)
             collider.enabled = false;
 
-        // Отключаем меч если используется
+        // ГЋГІГЄГ«ГѕГ·Г ГҐГ¬ Г¬ГҐГ· ГҐГ±Г«ГЁ ГЁГ±ГЇГ®Г«ГјГ§ГіГҐГІГ±Гї
         if (useSwordCollision && swordCollider != null)
             swordCollider.enabled = false;
 
@@ -680,25 +680,25 @@ public class EnemyAI : MonoBehaviour
     }
 
 
-    // Визуализация в редакторе
+    // Г‚ГЁГ§ГіГ Г«ГЁГ§Г Г¶ГЁГї Гў Г°ГҐГ¤Г ГЄГІГ®Г°ГҐ
     void OnDrawGizmosSelected()
     {
-        // Радиус обнаружения
+        // ГђГ Г¤ГЁГіГ± Г®ГЎГ­Г Г°ГіГ¦ГҐГ­ГЁГї
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, detectionRange);
 
-        // Радиус атаки
+        // ГђГ Г¤ГЁГіГ± Г ГІГ ГЄГЁ
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
 
-        // Радиус попадания (если не используется меч)
+        // ГђГ Г¤ГЁГіГ± ГЇГ®ГЇГ Г¤Г Г­ГЁГї (ГҐГ±Г«ГЁ Г­ГҐ ГЁГ±ГЇГ®Г«ГјГ§ГіГҐГІГ±Гї Г¬ГҐГ·)
         if (!useSwordCollision)
         {
             Gizmos.color = Color.magenta;
             Gizmos.DrawWireSphere(transform.position, attackHitRadius);
         }
 
-        // Точки патрулирования
+        // Г’Г®Г·ГЄГЁ ГЇГ ГІГ°ГіГ«ГЁГ°Г®ГўГ Г­ГЁГї
         if (patrolPoints != null)
         {
             Gizmos.color = Color.blue;
@@ -712,14 +712,14 @@ public class EnemyAI : MonoBehaviour
             }
         }
 
-        // Линия к игроку если видим
+        // Г‹ГЁГ­ГЁГї ГЄ ГЁГЈГ°Г®ГЄГі ГҐГ±Г«ГЁ ГўГЁГ¤ГЁГ¬
         if (player != null && currentState == EnemyState.Chasing)
         {
             Gizmos.color = Color.green;
             Gizmos.DrawLine(transform.position, player.position);
         }
 
-        // Показываем меч если есть и используется
+        // ГЏГ®ГЄГ Г§Г»ГўГ ГҐГ¬ Г¬ГҐГ· ГҐГ±Г«ГЁ ГҐГ±ГІГј ГЁ ГЁГ±ГЇГ®Г«ГјГ§ГіГҐГІГ±Гї
         if (useSwordCollision && swordObject != null)
         {
             Gizmos.color = Color.magenta;
