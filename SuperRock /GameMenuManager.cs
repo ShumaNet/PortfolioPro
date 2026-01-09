@@ -32,7 +32,7 @@ public class GameMenuManager : MonoBehaviour
 
     void Start()
     {
-        // Инициализация меню
+        // Г€Г­ГЁГ¶ГЁГ Г«ГЁГ§Г Г¶ГЁГї Г¬ГҐГ­Гѕ
         if (SceneManager.GetActiveScene().name == "Menu")
         {
             InitializeMainMenu();
@@ -83,7 +83,7 @@ public class GameMenuManager : MonoBehaviour
         if (pauseMenuPanel != null)
             pauseMenuPanel.SetActive(false);
 
-        // Настройка кнопок паузы
+        // ГЌГ Г±ГІГ°Г®Г©ГЄГ  ГЄГ­Г®ГЇГ®ГЄ ГЇГ ГіГ§Г»
         if (saveButton != null)
             saveButton.onClick.AddListener(SaveGame);
 
@@ -138,7 +138,7 @@ public class GameMenuManager : MonoBehaviour
     }
 
 
-    // Основные методы меню
+    // ГЋГ±Г­Г®ГўГ­Г»ГҐ Г¬ГҐГІГ®Г¤Г» Г¬ГҐГ­Гѕ
     public void OnNewGame()
     {
         SaveManager.Instance.DeleteAllSaves();
@@ -155,7 +155,7 @@ public class GameMenuManager : MonoBehaviour
 
     public void OnExit()
     {
-        Debug.Log("Выходим из игры");
+        Debug.Log("Г‚Г»ГµГ®Г¤ГЁГ¬ ГЁГ§ ГЁГЈГ°Г»");
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
@@ -163,7 +163,7 @@ public class GameMenuManager : MonoBehaviour
 #endif
     }
 
-    // Методы паузы
+    // ГЊГҐГІГ®Г¤Г» ГЇГ ГіГ§Г»
     public void SaveGame()
     {
         if (SaveManager.Instance != null)
@@ -176,7 +176,7 @@ public class GameMenuManager : MonoBehaviour
             TextMeshProUGUI text = saveButton.GetComponentInChildren<TextMeshProUGUI>();
             if (text != null)
             {
-                text.text = "СОХРАНЕНО!";
+                text.text = "Г‘ГЋГ•ГђГЂГЌГ…ГЌГЋ!";
                 Invoke("ResetSaveButtonText", 1f);
             }
         }
@@ -187,7 +187,7 @@ public class GameMenuManager : MonoBehaviour
         if (saveButton != null)
         {
             TextMeshProUGUI text = saveButton.GetComponentInChildren<TextMeshProUGUI>();
-            if (text != null) text.text = "Сохранить";
+            if (text != null) text.text = "Г‘Г®ГµГ°Г Г­ГЁГІГј";
         }
     }
 
@@ -233,7 +233,7 @@ public class GameMenuManager : MonoBehaviour
         CharacterControl.canWalk = !isPaused;
     }
 
-    // Методы экрана смерти
+    // ГЊГҐГІГ®Г¤Г» ГЅГЄГ°Г Г­Г  Г±Г¬ГҐГ°ГІГЁ
     public void ShowDeathScreen()
     {
         if (deathScreen != null)
@@ -250,7 +250,7 @@ public class GameMenuManager : MonoBehaviour
 
         canvasGroup.alpha = 0f;
 
-        // Затемнение
+        // Г‡Г ГІГҐГ¬Г­ГҐГ­ГЁГҐ
         float elapsed = 0f;
         float duration = 1.5f;
 
@@ -261,10 +261,10 @@ public class GameMenuManager : MonoBehaviour
             yield return null;
         }
 
-        // Текст
+        // Г’ГҐГЄГ±ГІ
         if (diedText != null)
         {
-            diedText.text = "ВЫ УМЕРЛИ";
+            diedText.text = "Г‚Г› Г“ГЊГ…ГђГ‹Г€";
             diedText.color = new Color(1, 0, 0, 0);
 
             elapsed = 0f;
@@ -280,7 +280,7 @@ public class GameMenuManager : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(2f);
 
-        // Перезагрузка
+        // ГЏГҐГ°ГҐГ§Г ГЈГ°ГіГ§ГЄГ 
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
