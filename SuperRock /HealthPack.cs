@@ -2,38 +2,38 @@ using UnityEngine;
 
 public class HealthPack : MonoBehaviour
 {
-    [Header("Настройки аптечки")]
+    [Header("ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г ГЇГІГҐГ·ГЄГЁ")]
     public int healAmount = 25;
-    public string packId = ""; // Оставь ПУСТЫМ - заполнится автоматически
+    public string packId = ""; // ГЋГ±ГІГ ГўГј ГЏГ“Г‘Г’Г›ГЊ - Г§Г ГЇГ®Г«Г­ГЁГІГ±Гї Г ГўГІГ®Г¬Г ГІГЁГ·ГҐГ±ГЄГЁ
 
     private bool isCollected = false;
 
     void Start()
     {
-        // Если ID не задан в инспекторе - генерируем
+        // Г…Г±Г«ГЁ ID Г­ГҐ Г§Г Г¤Г Г­ Гў ГЁГ­Г±ГЇГҐГЄГІГ®Г°ГҐ - ГЈГҐГ­ГҐГ°ГЁГ°ГіГҐГ¬
         if (string.IsNullOrEmpty(packId))
         {
             packId = GenerateStaticId();
         }
 
-        // Проверяем, не собрана ли аптечка
+        // ГЏГ°Г®ГўГҐГ°ГїГҐГ¬, Г­ГҐ Г±Г®ГЎГ°Г Г­Г  Г«ГЁ Г ГЇГІГҐГ·ГЄГ 
         CheckIfCollected();
     }
 
     void CheckIfCollected()
     {
-        // Ключ для сохранения состояния аптечки
+        // ГЉГ«ГѕГ· Г¤Г«Гї Г±Г®ГµГ°Г Г­ГҐГ­ГЁГї Г±Г®Г±ГІГ®ГїГ­ГЁГї Г ГЇГІГҐГ·ГЄГЁ
         string saveKey = "HealthPackCollected_" + packId;
 
         if (PlayerPrefs.HasKey(saveKey))
         {
             isCollected = true;
             gameObject.SetActive(false);
-            Debug.Log($"Аптечка {packId} уже собрана ранее");
+            Debug.Log($"ГЂГЇГІГҐГ·ГЄГ  {packId} ГіГ¦ГҐ Г±Г®ГЎГ°Г Г­Г  Г°Г Г­ГҐГҐ");
         }
         else
         {
-            Debug.Log($"Аптечка {packId} доступна для сбора");
+            Debug.Log($"ГЂГЇГІГҐГ·ГЄГ  {packId} Г¤Г®Г±ГІГіГЇГ­Г  Г¤Г«Гї Г±ГЎГ®Г°Г ");
         }
     }
 
@@ -43,7 +43,7 @@ public class HealthPack : MonoBehaviour
 
         if (other.CompareTag("Player"))
         {
-            // Получаем компонент игрока
+            // ГЏГ®Г«ГіГ·Г ГҐГ¬ ГЄГ®Г¬ГЇГ®Г­ГҐГ­ГІ ГЁГЈГ°Г®ГЄГ 
             CharacterControl player = other.GetComponent<CharacterControl>();
             if (player != null)
             {
@@ -58,42 +58,42 @@ public class HealthPack : MonoBehaviour
 
         isCollected = true;
 
-        // 1. Лечим игрока
+        // 1. Г‹ГҐГ·ГЁГ¬ ГЁГЈГ°Г®ГЄГ 
         player.Heal(healAmount);
 
-        // 2. Помечаем аптечку как собранную
+        // 2. ГЏГ®Г¬ГҐГ·Г ГҐГ¬ Г ГЇГІГҐГ·ГЄГі ГЄГ ГЄ Г±Г®ГЎГ°Г Г­Г­ГіГѕ
         string saveKey = "HealthPackCollected_" + packId;
         PlayerPrefs.SetInt(saveKey, 1);
 
-        // 3. Сохраняем всё
+        // 3. Г‘Г®ГµГ°Г Г­ГїГҐГ¬ ГўГ±Вё
         PlayerPrefs.Save();
 
-        // 4. Визуальные эффекты
+        // 4. Г‚ГЁГ§ГіГ Г«ГјГ­Г»ГҐ ГЅГґГґГҐГЄГІГ»
         StartCoroutine(CollectEffect());
 
-        Debug.Log($"Аптечка {packId} использована! +{healAmount} HP");
+        Debug.Log($"ГЂГЇГІГҐГ·ГЄГ  {packId} ГЁГ±ГЇГ®Г«ГјГ§Г®ГўГ Г­Г ! +{healAmount} HP");
     }
 
     System.Collections.IEnumerator CollectEffect()
     {
-        // Простой эффект сбора
+        // ГЏГ°Г®Г±ГІГ®Г© ГЅГґГґГҐГЄГІ Г±ГЎГ®Г°Г 
         GetComponent<MeshRenderer>().enabled = false;
         GetComponent<Collider>().enabled = false;
 
-        // Можно добавить частицы, звук и т.д.
+        // ГЊГ®Г¦Г­Г® Г¤Г®ГЎГ ГўГЁГІГј Г·Г Г±ГІГЁГ¶Г», Г§ГўГіГЄ ГЁ ГІ.Г¤.
         // if (collectSound != null) AudioSource.PlayClipAtPoint(collectSound, transform.position);
         // if (collectEffect != null) Instantiate(collectEffect, transform.position, Quaternion.identity);
 
         yield return new WaitForSeconds(0.5f);
 
-        // Полностью скрываем
+        // ГЏГ®Г«Г­Г®Г±ГІГјГѕ Г±ГЄГ°Г»ГўГ ГҐГ¬
         gameObject.SetActive(false);
     }
 
-    // Генерация уникального статического ID (как в CoinSimple)
+    // ГѓГҐГ­ГҐГ°Г Г¶ГЁГї ГіГ­ГЁГЄГ Г«ГјГ­Г®ГЈГ® Г±ГІГ ГІГЁГ·ГҐГ±ГЄГ®ГЈГ® ID (ГЄГ ГЄ Гў CoinSimple)
     string GenerateStaticId()
     {
-        // Используем позицию объекта
+        // Г€Г±ГЇГ®Г«ГјГ§ГіГҐГ¬ ГЇГ®Г§ГЁГ¶ГЁГѕ Г®ГЎГєГҐГЄГІГ 
         Vector3 pos = transform.position;
         string positionId = $"X{pos.x:F2}_Y{pos.y:F2}_Z{pos.z:F2}";
 
@@ -102,7 +102,7 @@ public class HealthPack : MonoBehaviour
         return $"HEALTH_{sceneName}_{positionId}";
     }
 
-    // Редактор: показывать ID в инспекторе
+    // ГђГҐГ¤Г ГЄГІГ®Г°: ГЇГ®ГЄГ Г§Г»ГўГ ГІГј ID Гў ГЁГ­Г±ГЇГҐГЄГІГ®Г°ГҐ
     void OnValidate()
     {
         if (string.IsNullOrEmpty(packId))
@@ -111,8 +111,8 @@ public class HealthPack : MonoBehaviour
         }
     }
 
-    // Метод для сброса состояния (для тестирования)
-    [ContextMenu("Сбросить состояние аптечки")]
+    // ГЊГҐГІГ®Г¤ Г¤Г«Гї Г±ГЎГ°Г®Г±Г  Г±Г®Г±ГІГ®ГїГ­ГЁГї (Г¤Г«Гї ГІГҐГ±ГІГЁГ°Г®ГўГ Г­ГЁГї)
+    [ContextMenu("Г‘ГЎГ°Г®Г±ГЁГІГј Г±Г®Г±ГІГ®ГїГ­ГЁГҐ Г ГЇГІГҐГ·ГЄГЁ")]
     public void ResetHealthPack()
     {
         string saveKey = "HealthPackCollected_" + packId;
@@ -124,10 +124,10 @@ public class HealthPack : MonoBehaviour
         GetComponent<MeshRenderer>().enabled = true;
         GetComponent<Collider>().enabled = true;
 
-        Debug.Log($"Аптечка {packId} сброшена!");
+        Debug.Log($"ГЂГЇГІГҐГ·ГЄГ  {packId} Г±ГЎГ°Г®ГёГҐГ­Г !");
     }
 
-    // Метод для ручного сбора (например, из других скриптов)
+    // ГЊГҐГІГ®Г¤ Г¤Г«Гї Г°ГіГ·Г­Г®ГЈГ® Г±ГЎГ®Г°Г  (Г­Г ГЇГ°ГЁГ¬ГҐГ°, ГЁГ§ Г¤Г°ГіГЈГЁГµ Г±ГЄГ°ГЁГЇГІГ®Гў)
     public void ForceCollect(CharacterControl player)
     {
         if (!isCollected && player != null)
