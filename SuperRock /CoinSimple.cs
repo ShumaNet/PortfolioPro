@@ -2,21 +2,21 @@ using UnityEngine;
 
 public class CoinSimple : MonoBehaviour
 {
-    [Header("Настройки монеты")]
+    [Header("ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г¬Г®Г­ГҐГІГ»")]
     public int coinValue = 1;
-    public string coinId = ""; // Оставь ПУСТЫМ - заполнится автоматически
+    public string coinId = ""; // ГЋГ±ГІГ ГўГј ГЏГ“Г‘Г’Г›ГЊ - Г§Г ГЇГ®Г«Г­ГЁГІГ±Гї Г ГўГІГ®Г¬Г ГІГЁГ·ГҐГ±ГЄГЁ
 
     private bool isCollected = false;
 
     void Start()
     {
-        // Если ID не задан в инспекторе - генерируем
+        // Г…Г±Г«ГЁ ID Г­ГҐ Г§Г Г¤Г Г­ Гў ГЁГ­Г±ГЇГҐГЄГІГ®Г°ГҐ - ГЈГҐГ­ГҐГ°ГЁГ°ГіГҐГ¬
         if (string.IsNullOrEmpty(coinId))
         {
             coinId = GenerateStaticId();
         }
 
-        // Проверяем, не собрана ли монета
+        // ГЏГ°Г®ГўГҐГ°ГїГҐГ¬, Г­ГҐ Г±Г®ГЎГ°Г Г­Г  Г«ГЁ Г¬Г®Г­ГҐГІГ 
         CheckIfCollected();
     }
 
@@ -32,18 +32,18 @@ public class CoinSimple : MonoBehaviour
 
     void CheckIfCollected()
     {
-        // Ключ для сохранения состояния монеты
+        // ГЉГ«ГѕГ· Г¤Г«Гї Г±Г®ГµГ°Г Г­ГҐГ­ГЁГї Г±Г®Г±ГІГ®ГїГ­ГЁГї Г¬Г®Г­ГҐГІГ»
         string saveKey = "CoinCollected_" + coinId;
 
         if (PlayerPrefs.HasKey(saveKey))
         {
             isCollected = true;
             gameObject.SetActive(false);
-            Debug.Log($"Монета {coinId} уже собрана ранее");
+            Debug.Log($"ГЊГ®Г­ГҐГІГ  {coinId} ГіГ¦ГҐ Г±Г®ГЎГ°Г Г­Г  Г°Г Г­ГҐГҐ");
         }
         else
         {
-            Debug.Log($"Монета {coinId} доступна для сбора");
+            Debug.Log($"ГЊГ®Г­ГҐГІГ  {coinId} Г¤Г®Г±ГІГіГЇГ­Г  Г¤Г«Гї Г±ГЎГ®Г°Г ");
         }
     }
 
@@ -53,51 +53,51 @@ public class CoinSimple : MonoBehaviour
 
         isCollected = true;
 
-        // 1. Добавляем деньги
+        // 1. Г„Г®ГЎГ ГўГ«ГїГҐГ¬ Г¤ГҐГ­ГјГЈГЁ
         int currentMoney = PlayerPrefs.GetInt("Money", 0);
         currentMoney += coinValue;
         PlayerPrefs.SetInt("Money", currentMoney);
 
-        // 2. Помечаем монету как собранную
+        // 2. ГЏГ®Г¬ГҐГ·Г ГҐГ¬ Г¬Г®Г­ГҐГІГі ГЄГ ГЄ Г±Г®ГЎГ°Г Г­Г­ГіГѕ
         string saveKey = "CoinCollected_" + coinId;
         PlayerPrefs.SetInt(saveKey, 1);
 
-        // 3. Сохраняем всё
+        // 3. Г‘Г®ГµГ°Г Г­ГїГҐГ¬ ГўГ±Вё
         PlayerPrefs.Save();
 
-        // 4. Визуальные эффекты
+        // 4. Г‚ГЁГ§ГіГ Г«ГјГ­Г»ГҐ ГЅГґГґГҐГЄГІГ»
         StartCoroutine(CollectEffect());
 
-        Debug.Log($"Монета {coinId} собрана! +{coinValue}$. Всего: {currentMoney}$");
+        Debug.Log($"ГЊГ®Г­ГҐГІГ  {coinId} Г±Г®ГЎГ°Г Г­Г ! +{coinValue}$. Г‚Г±ГҐГЈГ®: {currentMoney}$");
     }
 
     System.Collections.IEnumerator CollectEffect()
     {
-        // Простой эффект сбора
+        // ГЏГ°Г®Г±ГІГ®Г© ГЅГґГґГҐГЄГІ Г±ГЎГ®Г°Г 
         GetComponent<MeshRenderer>().enabled = false;
         GetComponent<Collider>().enabled = false;
 
-        // Можно добавить частицы, звук и т.д.
+        // ГЊГ®Г¦Г­Г® Г¤Г®ГЎГ ГўГЁГІГј Г·Г Г±ГІГЁГ¶Г», Г§ГўГіГЄ ГЁ ГІ.Г¤.
 
         yield return new WaitForSeconds(0.5f);
 
-        // Полностью скрываем
+        // ГЏГ®Г«Г­Г®Г±ГІГјГѕ Г±ГЄГ°Г»ГўГ ГҐГ¬
         gameObject.SetActive(false);
     }
 
     string GenerateStaticId()
     {
-        // Используем позицию объекта - она уникальна на сцене
+        // Г€Г±ГЇГ®Г«ГјГ§ГіГҐГ¬ ГЇГ®Г§ГЁГ¶ГЁГѕ Г®ГЎГєГҐГЄГІГ  - Г®Г­Г  ГіГ­ГЁГЄГ Г«ГјГ­Г  Г­Г  Г±Г¶ГҐГ­ГҐ
         Vector3 pos = transform.position;
         string positionId = $"X{pos.x:F2}_Y{pos.y:F2}_Z{pos.z:F2}";
 
-        // Имя сцены для разных уровней
+        // Г€Г¬Гї Г±Г¶ГҐГ­Г» Г¤Г«Гї Г°Г Г§Г­Г»Гµ ГіГ°Г®ГўГ­ГҐГ©
         string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
 
         return $"COIN_{sceneName}_{positionId}";
     }
 
-    // Редактор: показывать ID в инспекторе
+    // ГђГҐГ¤Г ГЄГІГ®Г°: ГЇГ®ГЄГ Г§Г»ГўГ ГІГј ID Гў ГЁГ­Г±ГЇГҐГЄГІГ®Г°ГҐ
     void OnValidate()
     {
         if (string.IsNullOrEmpty(coinId))
