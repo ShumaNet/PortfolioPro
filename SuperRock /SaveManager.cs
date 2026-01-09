@@ -27,7 +27,7 @@ public class SaveManager : MonoBehaviour
     {
         try
         {
-            // Сохраняем данные игрока
+            // Г‘Г®ГµГ°Г Г­ГїГҐГ¬ Г¤Г Г­Г­Г»ГҐ ГЁГЈГ°Г®ГЄГ 
             GameObject player = GameObject.FindGameObjectWithTag("Player");
             if (player != null)
             {
@@ -39,31 +39,31 @@ public class SaveManager : MonoBehaviour
                 }
             }
 
-            // Сохраняем деньги
+            // Г‘Г®ГµГ°Г Г­ГїГҐГ¬ Г¤ГҐГ­ГјГЈГЁ
             currentGameData.playerMoney = PlayerPrefs.GetInt("Money", 0);
 
-            // Сохраняем текущий уровень
+            // Г‘Г®ГµГ°Г Г­ГїГҐГ¬ ГІГҐГЄГіГ№ГЁГ© ГіГ°Г®ГўГҐГ­Гј
             currentGameData.currentLevel = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
             currentGameData.lastSaveTime = System.DateTime.Now;
             currentGameData.isNewGame = false;
 
-            // Сохраняем состояние монет
+            // Г‘Г®ГµГ°Г Г­ГїГҐГ¬ Г±Г®Г±ГІГ®ГїГ­ГЁГҐ Г¬Г®Г­ГҐГІ
             SaveCoinStates();
 
-            // Сохраняем состояние врагов
+            // Г‘Г®ГµГ°Г Г­ГїГҐГ¬ Г±Г®Г±ГІГ®ГїГ­ГЁГҐ ГўГ°Г ГЈГ®Гў
             SaveEnemyStates();
 
-            // Сериализуем и сохраняем
+            // Г‘ГҐГ°ГЁГ Г«ГЁГ§ГіГҐГ¬ ГЁ Г±Г®ГµГ°Г Г­ГїГҐГ¬
             string json = JsonUtility.ToJson(currentGameData);
             string savePath = GetSavePath();
             File.WriteAllText(savePath, json);
 
-            Debug.Log($"Игра сохранена: {savePath}");
-            Debug.Log($"Здоровье: {currentGameData.playerHealth}, Деньги: {currentGameData.playerMoney}");
+            Debug.Log($"Г€ГЈГ°Г  Г±Г®ГµГ°Г Г­ГҐГ­Г : {savePath}");
+            Debug.Log($"Г‡Г¤Г®Г°Г®ГўГјГҐ: {currentGameData.playerHealth}, Г„ГҐГ­ГјГЈГЁ: {currentGameData.playerMoney}");
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"Ошибка при сохранении: {e.Message}");
+            Debug.LogError($"ГЋГёГЁГЎГЄГ  ГЇГ°ГЁ Г±Г®ГµГ°Г Г­ГҐГ­ГЁГЁ: {e.Message}");
         }
     }
 
@@ -77,17 +77,17 @@ public class SaveManager : MonoBehaviour
             {
                 string json = File.ReadAllText(savePath);
                 currentGameData = JsonUtility.FromJson<GameData>(json);
-                Debug.Log("Игра загружена");
+                Debug.Log("Г€ГЈГ°Г  Г§Г ГЈГ°ГіГ¦ГҐГ­Г ");
             }
             else
             {
                 currentGameData = new GameData();
-                Debug.Log("Создано новое сохранение");
+                Debug.Log("Г‘Г®Г§Г¤Г Г­Г® Г­Г®ГўГ®ГҐ Г±Г®ГµГ°Г Г­ГҐГ­ГЁГҐ");
             }
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"Ошибка при загрузке: {e.Message}");
+            Debug.LogError($"ГЋГёГЁГЎГЄГ  ГЇГ°ГЁ Г§Г ГЈГ°ГіГ§ГЄГҐ: {e.Message}");
             currentGameData = new GameData();
         }
     }
@@ -113,17 +113,17 @@ public class SaveManager : MonoBehaviour
                 File.Delete(savePath);
             }
 
-            // Очищаем PlayerPrefs
+            // ГЋГ·ГЁГ№Г ГҐГ¬ PlayerPrefs
             PlayerPrefs.DeleteAll();
             PlayerPrefs.Save();
 
             currentGameData = new GameData();
 
-            Debug.Log("Все сохранения удалены");
+            Debug.Log("Г‚Г±ГҐ Г±Г®ГµГ°Г Г­ГҐГ­ГЁГї ГіГ¤Г Г«ГҐГ­Г»");
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"Ошибка при удалении сохранений: {e.Message}");
+            Debug.LogError($"ГЋГёГЁГЎГЄГ  ГЇГ°ГЁ ГіГ¤Г Г«ГҐГ­ГЁГЁ Г±Г®ГµГ°Г Г­ГҐГ­ГЁГ©: {e.Message}");
         }
     }
 
@@ -170,14 +170,14 @@ public class SaveManager : MonoBehaviour
 
     public void RestoreGameState()
     {
-        // Восстанавливаем деньги
+        // Г‚Г®Г±Г±ГІГ Г­Г ГўГ«ГЁГўГ ГҐГ¬ Г¤ГҐГ­ГјГЈГЁ
         PlayerPrefs.SetInt("Money", currentGameData.playerMoney);
         PlayerPrefs.Save();
 
-        // Восстанавливаем монеты
+        // Г‚Г®Г±Г±ГІГ Г­Г ГўГ«ГЁГўГ ГҐГ¬ Г¬Г®Г­ГҐГІГ»
         RestoreCoinStates();
 
-        // Восстанавливаем врагов
+        // Г‚Г®Г±Г±ГІГ Г­Г ГўГ«ГЁГўГ ГҐГ¬ ГўГ°Г ГЈГ®Гў
         RestoreEnemyStates();
     }
 
