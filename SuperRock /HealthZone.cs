@@ -4,13 +4,13 @@ using TMPro;
 
 public class HealthZone : MonoBehaviour
 {
-    [Header("Настройки зоны")]
+    [Header("ГЌГ Г±ГІГ°Г®Г©ГЄГЁ Г§Г®Г­Г»")]
     public int damagePerSecond = 10;
     public float warningRange = 10f;
     public float damageRange = 5f;
-    public string warningMessage = "ВНИМАНИЕ: Радиационная зона! Уйдите немедленно!";
+    public string warningMessage = "Г‚ГЌГ€ГЊГЂГЌГ€Г…: ГђГ Г¤ГЁГ Г¶ГЁГ®Г­Г­Г Гї Г§Г®Г­Г ! Г“Г©Г¤ГЁГІГҐ Г­ГҐГ¬ГҐГ¤Г«ГҐГ­Г­Г®!";
 
-    [Header("Визуальные эффекты")]
+    [Header("Г‚ГЁГ§ГіГ Г«ГјГ­Г»ГҐ ГЅГґГґГҐГЄГІГ»")]
     public ParticleSystem warningParticles;
     public ParticleSystem damageParticles;
     public AudioClip warningSound;
@@ -51,7 +51,7 @@ public class HealthZone : MonoBehaviour
 
         if (distance <= damageRange)
         {
-            // Игрок в зоне урона
+            // Г€ГЈГ°Г®ГЄ Гў Г§Г®Г­ГҐ ГіГ°Г®Г­Г 
             if (!isPlayerInZone)
             {
                 EnterDamageZone();
@@ -59,13 +59,13 @@ public class HealthZone : MonoBehaviour
 
             timeInZone += Time.deltaTime;
 
-            // Наносим урон каждую секунду
+            // ГЌГ Г­Г®Г±ГЁГ¬ ГіГ°Г®Г­ ГЄГ Г¦Г¤ГіГѕ Г±ГҐГЄГіГ­Г¤Гі
             if (timeInZone >= 1f)
             {
                 playerHealth.TakeDamage(damagePerSecond);
                 timeInZone = 0f;
 
-                // Эффект урона
+                // ГќГґГґГҐГЄГІ ГіГ°Г®Г­Г 
                 if (damageParticles != null && !damageParticles.isPlaying)
                     damageParticles.Play();
 
@@ -77,7 +77,7 @@ public class HealthZone : MonoBehaviour
         }
         else if (distance <= warningRange)
         {
-            // Игрок в зоне предупреждения
+            // Г€ГЈГ°Г®ГЄ Гў Г§Г®Г­ГҐ ГЇГ°ГҐГ¤ГіГЇГ°ГҐГ¦Г¤ГҐГ­ГЁГї
             if (isPlayerInZone)
             {
                 ExitDamageZone();
@@ -87,7 +87,7 @@ public class HealthZone : MonoBehaviour
         }
         else
         {
-            // Игрок вне зоны
+            // Г€ГЈГ°Г®ГЄ ГўГ­ГҐ Г§Г®Г­Г»
             if (isPlayerInZone)
             {
                 ExitDamageZone();
@@ -101,7 +101,7 @@ public class HealthZone : MonoBehaviour
         isPlayerInZone = true;
         timeInZone = 0f;
 
-        Debug.Log("Игрок вошел в опасную зону!");
+        Debug.Log("Г€ГЈГ°Г®ГЄ ГўГ®ГёГҐГ« Гў Г®ГЇГ Г±Г­ГіГѕ Г§Г®Г­Гі!");
 
         if (warningParticles != null)
             warningParticles.Stop();
@@ -115,7 +115,7 @@ public class HealthZone : MonoBehaviour
         isPlayerInZone = false;
         timeInZone = 0f;
 
-        Debug.Log("Игрок вышел из опасной зоны");
+        Debug.Log("Г€ГЈГ°Г®ГЄ ГўГ»ГёГҐГ« ГЁГ§ Г®ГЇГ Г±Г­Г®Г© Г§Г®Г­Г»");
 
         if (damageParticles != null)
             damageParticles.Stop();
@@ -152,14 +152,14 @@ public class HealthZone : MonoBehaviour
         {
             if (countdownText != null)
             {
-                // Обратный отсчет до следующего тика урона
+                // ГЋГЎГ°Г ГІГ­Г»Г© Г®ГІГ±Г·ГҐГІ Г¤Г® Г±Г«ГҐГ¤ГіГѕГ№ГҐГЈГ® ГІГЁГЄГ  ГіГ°Г®Г­Г 
                 float timeLeft = 1f - timeInZone;
-                countdownText.text = $"Урон через: {timeLeft:F1}с";
+                countdownText.text = $"Г“Г°Г®Г­ Г·ГҐГ°ГҐГ§: {timeLeft:F1}Г±";
                 countdownText.color = Color.Lerp(Color.red, Color.yellow, timeLeft);
             }
 
             if (warningText != null)
-                warningText.text = "ОПАСНОСТЬ! УКЛОНИТЕСЬ!";
+                warningText.text = "ГЋГЏГЂГ‘ГЌГЋГ‘Г’Гњ! Г“ГЉГ‹ГЋГЌГ€Г’Г…Г‘Гњ!";
         }
     }
 
@@ -174,15 +174,15 @@ public class HealthZone : MonoBehaviour
 
     void OnDrawGizmosSelected()
     {
-        // Зона предупреждения
+        // Г‡Г®Г­Г  ГЇГ°ГҐГ¤ГіГЇГ°ГҐГ¦Г¤ГҐГ­ГЁГї
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, warningRange);
 
-        // Зона урона
+        // Г‡Г®Г­Г  ГіГ°Г®Г­Г 
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, damageRange);
 
-        // Показываем направление к игроку
+        // ГЏГ®ГЄГ Г§Г»ГўГ ГҐГ¬ Г­Г ГЇГ°Г ГўГ«ГҐГ­ГЁГҐ ГЄ ГЁГЈГ°Г®ГЄГі
         if (player != null)
         {
             Gizmos.color = Color.white;
